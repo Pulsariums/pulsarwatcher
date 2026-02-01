@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { HiAnime } from "aniwatch";
 import { cache } from "../../config/cache.js";
 import type { ServerContext } from "../../config/context.js";
+import { parseM3U8Playlist } from "../../utils/m3u8Parser.js";
 
 const hianime = new HiAnime.Scraper();
 const hianimeRouter = new Hono<ServerContext>();
@@ -24,6 +25,7 @@ hianimeRouter.get("/", (c) => {
             anime: "/api/v1/hianime/anime/{animeId}",
             "episode/servers": "/api/v1/hianime/episode/servers",
             "episode/sources": "/api/v1/hianime/episode/sources",
+            "episode/sources-with-quality": "/api/v1/hianime/episode/sources-with-quality",
             "anime/episodes": "/api/v1/hianime/anime/{animeId}/episodes",
             "anime/next-episode-schedule": "/api/v1/hianime/anime/{animeId}/next-episode-schedule"
         }
@@ -222,6 +224,54 @@ hianimeRouter.get("/episode/sources", async (c) => {
 
     const data = await cache.getOrSet<HiAnime.ScrapedAnimeEpisodesSources>(
         async () => hianime.getEpisodeSources(animeEpisodeId, server, category),
+        cacheConfig.key,
+        cacheConfig.duration
+    );
+
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
+});
+
+// /api/v1/hianime/episode/sources-with-quality?animeEpisodeId={episodeId}&server={server}&category={category}
+hianimeRouter.get("/episode/sources-with-quality", async (c) => {
+    const cacheConfig = c.get("CACHE_CONFIG");
+    const animeEpisodeId = decodeURIComponent(
+        c.req.query("animeEpisodeId") || ""
+    );
+    const server = decodeURIComponent(
+        c.req.query("server") || HiAnime.Servers.VidStreaming
+    ) as HiAnime.AnimeServers;
+    const category = decodeURIComponent(c.req.query("category") || "sub") as
+        | "sub"
+        | "dub"
+        | "raw";
+
+    const data = await cache.getOrSet(
+        async () => {
+            const sources = await hianime.getEpisodeSources(animeEpisodeId, server, category);
+            
+            // Parse M3U8 playlists to extract quality variants
+            const sourcesWithQuality = await Promise.all(
+                sources.sources.map(async (source) => {
+                    if (source.isM3U8 && source.url.includes('master.m3u8')) {
+                        try {
+                            const qualities = await parseM3U8Playlist(source.url);
+                            return {
+                                ...source,
+                                qualities: qualities.length > 0 ? qualities : undefined,
+                            };
+                        } catch (error) {
+                            return source;
+                        }
+                    }
+                    return source;
+                })
+            );
+
+            return {
+                ...sources,
+                sources: sourcesWithQuality,
+            };
+        },
         cacheConfig.key,
         cacheConfig.duration
     );

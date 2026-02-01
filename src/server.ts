@@ -284,6 +284,22 @@ app.get("/info", (c) => {
                                 </div>
                             </div>
 
+                            <!-- Sources with Quality -->
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/hianime/episode/sources-with-quality?animeEpisodeId={episodeId}</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">🎬 Bölüm kaynakları + Çözünürlük bilgisi (1080p, 720p, 480p vb.)</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-sources-quality-curl')">Copy</button>
+                                    <pre id="hianime-sources-quality-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/episode/sources-with-quality?animeEpisodeId=naruto-677?ep=1"</pre>
+                                </div>
+                                <div class="mt-2">
+                                    <p class="text-xs text-zinc-500 mb-1">✨ YENİ: M3U8 playlist'i parse ederek tüm çözünürlükleri (4K, 1080p, 720p vb.) gösterir</p>
+                                </div>
+                            </div>
+
                             <!-- Producer -->
                             <div>
                                 <div class="flex items-center mb-2">

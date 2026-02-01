@@ -31,7 +31,7 @@
 |-------|-------------|--------|
 | `/api/v1/hianime/*` | HiAnime scraper - search, info, episodes, sources | ✅ Active |
 | `/api/v1/nineanime/*` | NineAnime scraper - search, info, sources | ✅ Active |
-| `/api/v1/gogoanime/*` | GogoAnime platform - search, episodes, sources | ⚠️ Testing |
+| `/api/v1/gogoanime/*` | GogoAnime platform - search, episodes, sources | ⚠️ CloudFlare Protected |
 | `/api/v1/anilist/*` | AniList API - metadata, trending, schedule | ✅ Active |
 | `/api/v1/animeunity/*` | AnimeUnity scraper - Italian platform | ⚠️ Deploy Pending |
 | `/api/v1/animeya/*` | Animeya streaming platform | ✅ Active |
