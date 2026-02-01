@@ -1,7 +1,7 @@
 import * as cheerio from "cheerio";
 
 const BASE_URL = "https://9animetv.to";
-const SITE_URL = "https://nineanime.com";
+const SITE_URL = "https://9animetv.to";
 
 const DEFAULT_HEADERS = {
   "User-Agent":
