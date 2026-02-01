@@ -601,15 +601,16 @@ app.get("/", (c) =>
         docs: "/docs",
         basePath: BASE_PATH,
         endpoints: {
-            hianime: `${BASE_PATH}/hianime`,
-            nineanime: `${BASE_PATH}/nineanime`,
-            consumet: `${BASE_PATH}/consumet`,
-            animeScrapers: `${BASE_PATH}/anime`,
-            meta: `${BASE_PATH}/anime-api`,
-            regional: {
-                hindiDubbed: `${BASE_PATH}/hindidubbed`,
+            hianime: { status: "✅ Active", path: `${BASE_PATH}/hianime` },
+            nineanime: { status: "✅ Active", path: `${BASE_PATH}/nineanime` },
+            animeya: { status: "✅ Active", path: `${BASE_PATH}/animeya` },
+            watchaw: { status: "✅ Active", path: `${BASE_PATH}/watchaw` },
+            hindidubbed: { status: "✅ Active", path: `${BASE_PATH}/hindidubbed` },
+            consumet: { status: "✅ Active", path: `${BASE_PATH}/consumet` },
+            animeScrapers: { status: "✅ Active", path: `${BASE_PATH}/anime` },
+            meta: { status: "✅ Active", path: `${BASE_PATH}/anime-api` },
+            regionalUnderMaintenance: {
                 animelok: `${BASE_PATH}/animelok`,
-                watchaw: `${BASE_PATH}/watchaw`,
                 desidubanime: `${BASE_PATH}/desidubanime`,
             }
         },

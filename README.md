@@ -93,11 +93,31 @@ Bu bölüm, geliştirme sırasında denenen sağlayıcıların neden çalıştı
 
 **Ana sağlayıcılar**
 1. **HiAnime** (`/api/v1/hianime/*`)
-	- **Durum**: Çalışıyor (test edildi)
+	- **Durum**: ✅ Çalışıyor
 	- **Nasıl**: Mevcut Tatakai router + aniwatch paketi
 
-2. **NineAnime → 9animetv.to** (`/api/v1/nineanime/*`)
-	- **Durum**: Çalışıyor (test edildi)
+2. **NineAnime** (`/api/v1/nineanime/*`)
+	- **Durum**: ✅ Çalışıyor
+	- **Nasıl**: Özel scraper ve parser modülleri
+
+3. **Animeya** (`/api/v1/animeya/*`)
+	- **Durum**: ✅ Çalışıyor
+	- **Nasıl**: Animeya streaming platform entegrasyonu
+
+4. **HindiDubbed** (`/api/v1/hindidubbed/*`)
+	- **Durum**: ✅ Çalışıyor
+	- **Nasıl**: animehindidubbed.in scraper
+
+5. **WatchAnimeWorld** (`/api/v1/watchaw/*`)
+	- **Durum**: ✅ Çalışıyor
+	- **Nasıl**: WatchAnimeWorld scraper
+
+**Bölgesel / Diğer (Durumu Değişken)**
+1. **Animelok** (`/api/v1/animelok/*`)
+	- **Durum**: ❌ Bakımda / Domain Değişikliği (Geçici olarak ulaşılamıyor)
+
+2. **Desidubanime** (`/api/v1/desidubanime/*`)
+	- **Durum**: ❌ Bakımda / Kapalı (Geçici olarak ulaşılamıyor)
 	- **Nasıl**: HTML sonuçları `flw-item` kartlarından `cheerio` ile parse
 	- **Not**: `/episode/sources` kısmi (JS ile yüklenen player)
 
