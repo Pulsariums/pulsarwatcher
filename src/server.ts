@@ -25,6 +25,7 @@ import "./routes/hianime/registry.js";
 import "./routes/nineanime/registry.js";
 import "./routes/animeunity/registry.js";
 import "./routes/animeya/registry.js";
+import "./routes/gogoanime/registry.js";
 
 // Import routes
 import { hianimeRouter } from "./routes/hianime/index.js";
@@ -37,6 +38,7 @@ import { animelokRouter } from "./routes/animelok/index.js";
 import { desidubanimeRouter } from "./routes/desidubanime/index.js";
 import nineanimeRouter from "./routes/nineanime/index.js";
 import { animeunityRouter } from "./routes/animeunity/index.js";
+import { gogoanimeRouter } from "./routes/gogoanime/index.js";
 
 import pkgJson from "../package.json" with { type: "json" };
 
@@ -325,6 +327,98 @@ app.get("/info", (c) => {
                         </div>
                     </div>
 
+                    <!-- GogoAnime -->
+                    <div class="endpoint-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h2 class="text-2xl font-bold text-white mb-1">GogoAnime</h2>
+                                <p class="text-sm text-zinc-400">Popular anime streaming platform with extensive library</p>
+                            </div>
+                            <span class="badge badge-active">✅ Active</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/gogoanime/search?q=naruto</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Anime arama işlemi</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'gogoanime-search-curl')">Copy</button>
+                                    <pre id="gogoanime-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/gogoanime/search?q=naruto"</pre>
+                                </div>
+                                <div class="mt-2">
+                                    <p class="text-xs text-zinc-500 mb-1">Örnek Yanıt:</p>
+                                    <div class="code-block">
+                                        <pre>{
+  "provider": "PulsarWatch",
+  "status": 200,
+  "data": {
+    "results": [
+      {
+        "id": "naruto",
+        "title": "Naruto",
+        "poster": "https://...",
+        "releaseDate": "2002"
+      }
+    ]
+  }
+}</pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/gogoanime/info/{animeId}</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Anime detay bilgisi</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'gogoanime-info-curl')">Copy</button>
+                                    <pre id="gogoanime-info-curl">curl "https://pulsarwatcher.vercel.app/api/v1/gogoanime/info/naruto"</pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/gogoanime/episodes/{animeId}</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Anime bölüm listesi</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'gogoanime-episodes-curl')">Copy</button>
+                                    <pre id="gogoanime-episodes-curl">curl "https://pulsarwatcher.vercel.app/api/v1/gogoanime/episodes/naruto"</pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/gogoanime/sources/{episodeId}</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Bölüm izleme kaynakları</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'gogoanime-sources-curl')">Copy</button>
+                                    <pre id="gogoanime-sources-curl">curl "https://pulsarwatcher.vercel.app/api/v1/gogoanime/sources/naruto-episode-1"</pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/gogoanime/recent?page=1</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Son eklenen bölümler</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'gogoanime-recent-curl')">Copy</button>
+                                    <pre id="gogoanime-recent-curl">curl "https://pulsarwatcher.vercel.app/api/v1/gogoanime/recent?page=1"</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- AnimeUnity -->
                     <div class="endpoint-card">
                         <div class="flex justify-between items-start mb-4">
@@ -403,6 +497,18 @@ app.get("/info", (c) => {
                                 <div class="code-block group">
                                     <button class="copy-btn" onclick="copyToClipboard(this, 'watchaw-search-curl')">Copy</button>
                                     <pre id="watchaw-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/watchaw/search?title=naruto"</pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="badge badge-active text-xs">✅ Animeya</span>
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/animeya/search?q=naruto</code>
+                                </div>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'animeya-search-curl')">Copy</button>
+                                    <pre id="animeya-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/animeya/search?q=naruto"</pre>
                                 </div>
                             </div>
 
@@ -1045,6 +1151,7 @@ app.get("/", (c) =>
         quickstart: {
             hianimeSearch: `${BASE_PATH}/hianime/search?q=naruto`,
             nineanimeSearch: `${BASE_PATH}/nineanime/search?q=naruto`,
+            gogoanimeSearch: `${BASE_PATH}/gogoanime/search?q=naruto`,
             animeunitySearch: `${BASE_PATH}/animeunity/search?q=naruto`,
             scrapersList: `${BASE_PATH}/manage/scrapers`,
             systemHealth: `${BASE_PATH}/manage/health`,
@@ -1087,6 +1194,7 @@ app.route(`${BASE_PATH}/watchaw`, watchawRouter);
 app.route(`${BASE_PATH}/animeya`, animeyaRouter);
 app.route(`${BASE_PATH}/nineanime`, nineanimeRouter);
 app.route(`${BASE_PATH}/animeunity`, animeunityRouter);
+app.route(`${BASE_PATH}/gogoanime`, gogoanimeRouter);
 app.route(`${BASE_PATH}/anime`, animeRouter);
 app.route(`${BASE_PATH}/anime-api`, animeApiRouter);
 app.route(`${BASE_PATH}/animelok`, animelokRouter);
