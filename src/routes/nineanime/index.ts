@@ -1,323 +1,251 @@
-import { Router } from "hono";
+import { Hono } from "hono";
 import * as cheerio from "cheerio";
+import type { Context } from "hono";
 
-const nineanimeRouter = new Router();
+const nineanimeRouter = new Hono();
 
-// ============================================
-// Endpoints Description
-// ============================================
+const BASE_URL = "https://9anime.to";
 
-nineanimeRouter.get("/", (c) => {
-  return c.json({
-    provider: "NineAnime",
-    status: 200,
-    message: "NineAnime Scraper API",
-    endpoints: {
-      search: "/api/v1/nineanime/search?q=query",
-      trending: "/api/v1/nineanime/trending?page=1",
-      latest: "/api/v1/nineanime/latest?page=1",
-    },
-  });
-});
-
-// ============================================
-// Helper Functions
-// ============================================
-
-interface AnimeCard {
-  id: string;
-  title: string;
-  poster: string;
-  type?: string;
-  rating?: number;
-}
-
-async function fetchHtml(url: string): Promise<string> {
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-    },
-  });
-
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status}: ${url}`);
-  }
-
-  return await res.text();
-}
-
-function parseAnimeCards($: cheerio.CheerioAPI): AnimeCard[] {
-  const results: AnimeCard[] = [];
-
-  // NineAnime HTML struktur:
-  // <div class="flw-item">
-  //   <div class="film-poster">
-  //     <img alt="Anime Title" src="poster-url" />
-  //   </div>
-  //   <div class="film-detail">
-  //     <h3 class="film-name">
-  //       <a href="/watch/anime-slug">Anime Title</a>
-  //     </h3>
-  //     <span class="fdi-item">TV</span>
-  //   </div>
-  // </div>
-
-  $("div.flw-item").each((_, element) => {
-    const $el = $(element);
-
-    // ID/Slug'ı çıkar
-    const href = $el.find("h3.film-name a").attr("href") || "";
-    const idMatch = href.match(/\/watch\/(.+?)$/);
-    const id = idMatch ? idMatch[1] : "";
-
-    // Başlık
-    const title =
-      $el.find("h3.film-name a").attr("title") ||
-      $el.find("h3.film-name a").text().trim();
-
-    // Poster
-    const poster = $el.find("img.film-poster-img").attr("src") || "";
-
-    // Type (TV, Movie, vb)
-    const type = $el.find("span.fdi-item").first().text().trim() || "TV";
-
-    if (id && title && poster) {
-      results.push({ id, title, poster, type });
-    }
-  });
-
-  return results;
-}
-
-// ============================================
-// Search Endpoint
-// ============================================
-
-nineanimeRouter.get("/search", async (c) => {
+// Search endpoint
+nineanimeRouter.get("/search", async (c: Context) => {
   try {
     const query = c.req.query("q");
     const page = c.req.query("page") || "1";
 
     if (!query) {
-      return c.json({ error: "Missing query parameter" }, 400);
+      return c.json({ success: false, error: "Query parameter is required" }, 400);
     }
 
-    // Fetch HTML
-    const url = `https://nineanime.com/search?keyword=${encodeURIComponent(
-      query
-    )}&page=${page}`;
-    const html = await fetchHtml(url);
+    const searchUrl = `${BASE_URL}/filter?keyword=${encodeURIComponent(query)}&page=${page}`;
+    const response = await fetch(searchUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      },
+    });
+
+    const html = await response.text();
     const $ = cheerio.load(html);
 
-    // Parse anime'leri
-    const animes = parseAnimeCards($);
+    const results: any[] = [];
+
+    $("div.flw-item").each((_index, element) => {
+      const $el = $(element);
+      const id = $el.find("a.film-poster-ahref").attr("href")?.split("/").pop() || "";
+      const title = $el.find("h3.film-name a").text().trim();
+      const poster = $el.find("img.film-poster-img").attr("data-src") || $el.find("img.film-poster-img").attr("src") || "";
+      const type = $el.find("div.film-poster span.fdi-item:first").text().trim();
+      const episodes = $el.find("div.film-poster span.fdi-item:last").text().trim();
+
+      if (id && title) {
+        results.push({
+          id,
+          title,
+          poster,
+          type,
+          episodes,
+          url: `${BASE_URL}/watch/${id}`,
+        });
+      }
+    });
 
     return c.json({
       success: true,
-      data: animes,
-      query,
+      data: results,
       page: parseInt(page),
     });
   } catch (error: any) {
     return c.json(
       {
         success: false,
-        error: error.message || "Search failed",
+        error: error.message || "Failed to search anime",
       },
       500
     );
   }
 });
 
-// ============================================
-// Trending Endpoint
-// ============================================
-
-nineanimeRouter.get("/trending", async (c) => {
+// Trending endpoint
+nineanimeRouter.get("/trending", async (c: Context) => {
   try {
     const page = c.req.query("page") || "1";
+    const trendingUrl = `${BASE_URL}/filter?sort=trending&page=${page}`;
 
-    // Fetch trending page
-    const html = await fetchHtml(
-      `https://nineanime.com/trending?page=${page}`
-    );
+    const response = await fetch(trendingUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      },
+    });
+
+    const html = await response.text();
     const $ = cheerio.load(html);
 
-    const animes = parseAnimeCards($);
+    const results: any[] = [];
 
-    return c.json({
-      success: true,
-      data: animes,
-      page: parseInt(page),
+    $("div.flw-item").each((_index, element) => {
+      const $el = $(element);
+      const id = $el.find("a.film-poster-ahref").attr("href")?.split("/").pop() || "";
+      const title = $el.find("h3.film-name a").text().trim();
+      const poster = $el.find("img.film-poster-img").attr("data-src") || $el.find("img.film-poster-img").attr("src") || "";
+      const type = $el.find("div.film-poster span.fdi-item:first").text().trim();
+
+      if (id && title) {
+        results.push({ id, title, poster, type, url: `${BASE_URL}/watch/${id}` });
+      }
     });
+
+    return c.json({ success: true, data: results });
   } catch (error: any) {
-    return c.json(
-      {
-        success: false,
-        error: error.message,
-      },
-      500
-    );
+    return c.json({ success: false, error: error.message }, 500);
   }
 });
 
-// ============================================
-// Latest Endpoint
-// ============================================
-
-nineanimeRouter.get("/latest", async (c) => {
+// Latest endpoint
+nineanimeRouter.get("/latest", async (c: Context) => {
   try {
     const page = c.req.query("page") || "1";
+    const latestUrl = `${BASE_URL}/filter?sort=recently_updated&page=${page}`;
 
-    const html = await fetchHtml(`https://nineanime.com/home?page=${page}`);
+    const response = await fetch(latestUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      },
+    });
+
+    const html = await response.text();
     const $ = cheerio.load(html);
 
-    const animes = parseAnimeCards($);
+    const results: any[] = [];
 
-    return c.json({
-      success: true,
-      data: animes,
-      page: parseInt(page),
+    $("div.flw-item").each((_index, element) => {
+      const $el = $(element);
+      const id = $el.find("a.film-poster-ahref").attr("href")?.split("/").pop() || "";
+      const title = $el.find("h3.film-name a").text().trim();
+      const poster = $el.find("img.film-poster-img").attr("data-src") || $el.find("img.film-poster-img").attr("src") || "";
+
+      if (id && title) {
+        results.push({ id, title, poster, url: `${BASE_URL}/watch/${id}` });
+      }
     });
+
+    return c.json({ success: true, data: results });
   } catch (error: any) {
-    return c.json(
-      {
-        success: false,
-        error: error.message,
-      },
-      500
-    );
+    return c.json({ success: false, error: error.message }, 500);
   }
 });
 
-// ============================================
-// Anime Info Endpoint
-// ============================================
-
-nineanimeRouter.get("/info/:id", async (c) => {
+// Info endpoint
+nineanimeRouter.get("/info/:id", async (c: Context) => {
   try {
     const id = c.req.param("id");
+    const infoUrl = `${BASE_URL}/watch/${id}`;
 
-    // Fetch anime detail page
-    const html = await fetchHtml(`https://nineanime.com/watch/${id}`);
+    const response = await fetch(infoUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      },
+    });
+
+    const html = await response.text();
     const $ = cheerio.load(html);
 
-    // Title
-    const title = $("h1.film-title").text().trim();
+    const title = $("h1.film-name").text().trim();
+    const poster = $("img.film-poster-img").attr("src") || "";
+    const description = $("div.film-description").text().trim();
+    const type = $("span.item:contains('Type:')").next().text().trim();
+    const status = $("span.item:contains('Status:')").next().text().trim();
 
-    // Description
-    const description = $("div.film-description p").text().trim();
+    const episodes: any[] = [];
+    $("div.episodes-ul li a").each((_index, element) => {
+      const $ep = $(element);
+      const epId = $ep.attr("href")?.split("/").pop() || "";
+      const epNumber = $ep.text().trim();
 
-    // Poster
-    const poster = $("img.film-poster").attr("src") || "";
-
-    // Episodes count
-    const episodesText = $("div.film-stats span:contains('Episodes')").text();
-    const episodesMatch = episodesText.match(/(\d+)/);
-    const episodes = episodesMatch ? parseInt(episodesMatch[1]) : 0;
-
-    // Rating
-    const ratingText = $("span.film-rating").text();
-    const rating = parseFloat(ratingText) || 0;
-
-    const data = {
-      id,
-      title,
-      description,
-      poster,
-      episodes,
-      rating,
-      url: `https://nineanime.com/watch/${id}`,
-    };
+      if (epId) {
+        episodes.push({
+          id: epId,
+          number: epNumber,
+          url: `${BASE_URL}/watch/${id}/${epId}`,
+        });
+      }
+    });
 
     return c.json({
       success: true,
-      data,
+      data: {
+        id,
+        title,
+        poster,
+        description,
+        type,
+        status,
+        episodes,
+      },
     });
   } catch (error: any) {
-    return c.json(
-      {
-        success: false,
-        error: error.message,
-      },
-      500
-    );
+    return c.json({ success: false, error: error.message }, 500);
   }
 });
 
-// ============================================
-// Episode Sources Endpoint
-// ============================================
-
-nineanimeRouter.get("/episode/sources", async (c) => {
+// Episode sources endpoint
+nineanimeRouter.get("/episode/sources", async (c: Context) => {
   try {
-    const animeId = c.req.query("id");
-    const episodeNumber = c.req.query("ep");
+    const id = c.req.query("id");
+    const episodeId = c.req.query("ep");
 
-    if (!animeId || !episodeNumber) {
-      return c.json({ error: "Missing id or ep parameter" }, 400);
+    if (!id || !episodeId) {
+      return c.json(
+        {
+          success: false,
+          error: "Both 'id' and 'ep' parameters are required",
+        },
+        400
+      );
     }
 
-    // Fetch episode page
-    const episodeUrl = `https://nineanime.com/watch/${animeId}?ep=${episodeNumber}`;
-    const html = await fetchHtml(episodeUrl);
+    const episodeUrl = `${BASE_URL}/watch/${id}/${episodeId}`;
+
+    const response = await fetch(episodeUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+      },
+    });
+
+    const html = await response.text();
     const $ = cheerio.load(html);
 
-    // Video player'ı bul
     const iframeSrc =
       $("iframe.video-container").attr("src") ||
-      $("iframe[src*=\"nineanime\"]").attr("src") ||
+      $('iframe[src*="nineanime"]').attr("src") ||
       "";
 
     if (!iframeSrc) {
       return c.json(
         {
           success: false,
-          error: "No video source found for this episode",
+          error: "No video source found",
         },
         404
       );
     }
 
-    // Subtitle tracks
-    const tracks: any[] = [];
-    $("track[kind='captions']").each((_, el) => {
-      const $track = $(el);
-      tracks.push({
-        file: $track.attr("src"),
-        label: $track.attr("label") || "Unknown",
-        kind: "captions",
-      });
-    });
-
     const sources = [
       {
-        url: iframeSrc,
-        type: "iframe",
-        quality: "auto",
+        url: iframeSrc.startsWith("http") ? iframeSrc : `https:${iframeSrc}`,
+        quality: "default",
+        isM3U8: iframeSrc.includes(".m3u8"),
       },
     ];
 
     return c.json({
       success: true,
       data: {
-        animeId,
-        episodeNumber,
         sources,
-        tracks,
-        embedUrl: iframeSrc,
+        subtitles: [],
       },
     });
   } catch (error: any) {
-    return c.json(
-      {
-        success: false,
-        error: error.message,
-      },
-      500
-    );
+    return c.json({ success: false, error: error.message }, 500);
   }
 });
 
-export default nineanimeRouter;
+export { nineanimeRouter };
