@@ -4,7 +4,7 @@ import type { Context } from "hono";
 
 const nineanimeRouter = new Hono();
 
-const BASE_URL = "https://9anime.to";
+const BASE_URL = "https://9animetv.to";
 
 // Search endpoint
 nineanimeRouter.get("/search", async (c: Context) => {
