@@ -325,6 +325,58 @@ nineanimeRouter.get("/episode/sources", async (c: Context) => {
     }
 
     const sources = [
+
+// Get all episodes for anime
+nineanimeRouter.get("/episodes/:id", async (c: Context) => {
+  try {
+    const animeId = c.req.param("id");
+    const watchUrl = `${BASE_URL}/anime/${animeId}`;
+    const watchRes = await fetchHtmlWithCookie(watchUrl);
+    const $watch = cheerio.load(watchRes.html);
+    
+    const internalId = $watch("script")
+      .text()
+      .match(/"id":(\d+)/)?.[1];
+    
+    if (!internalId) {
+      return c.json({ success: false, error: "Could not find anime ID" });
+    }
+    
+    const episodeListUrl = `${BASE_URL}/ajax/episode/list/${internalId}`;
+    const episodeListRes = await fetchJson(episodeListUrl, watchUrl, watchRes.cookie);
+    const episodeListHtml = episodeListRes?.html || episodeListRes?.raw || "";
+    const $episodes = cheerio.load(episodeListHtml);
+    
+    const episodes: any[] = [];
+    $episodes(".ep-item").each((_, elem) => {
+      const $elem = $episodes(elem);
+      const episodeNum = $elem.attr("data-number");
+      const episodeId = $elem.attr("data-id");
+      const title = $elem.find(".name")?.text()?.trim() || `Episode ${episodeNum}`;
+      
+      if (episodeNum && episodeId) {
+        episodes.push({
+          number: parseInt(episodeNum),
+          id: episodeId,
+          title: title,
+        });
+      }
+    });
+    
+    return c.json({
+      success: true,
+      data: {
+        animeId,
+        internalId,
+        episodes: episodes,
+        totalEpisodes: episodes.length,
+      },
+    });
+  } catch (error: any) {
+    return c.json({ success: false, error: error.message }, 500);
+  }
+});
+
       {
         url: sourceRes.link,
         quality: "default",
