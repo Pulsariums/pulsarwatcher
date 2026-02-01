@@ -1,7 +1,7 @@
 {
   "name": "pulsarwatch-api",
-  "version": "1.2.0",
-  "description": "Unified anime API combining HiAnime, NineAnime, and regional scrapers with modern caching, CORS, rate limiting, and logging",
+  "version": "1.3.0",
+  "description": "Unified anime API combining HiAnime, NineAnime, AniList, and regional scrapers with modern caching, CORS, rate limiting, and logging",
   "main": "dist/src/server.js",
   "type": "module",
   "scripts": {

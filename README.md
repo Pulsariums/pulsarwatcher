@@ -1,6 +1,6 @@
 # PulsarWatch API 🎌
 
-> Unified Anime API combining HiAnime, NineAnime, AnimeUnity and regional scrapers with modern caching, CORS, rate limiting, and modular architecture.
+> Unified Anime API combining HiAnime, NineAnime, AniList, AnimeUnity and regional scrapers with modern caching, CORS, rate limiting, and modular architecture.
 
 ## ✨ Key Features
 
@@ -31,7 +31,9 @@
 |-------|-------------|--------|
 | `/api/v1/hianime/*` | HiAnime scraper - search, info, episodes, sources | ✅ Active |
 | `/api/v1/nineanime/*` | NineAnime scraper - search, info, sources | ✅ Active |
-| `/api/v1/animeunity/*` | AnimeUnity scraper - Italian platform | ✅ Active |
+| `/api/v1/gogoanime/*` | GogoAnime platform - search, episodes, sources | ⚠️ Testing |
+| `/api/v1/anilist/*` | AniList API - metadata, trending, schedule | ✅ Active |
+| `/api/v1/animeunity/*` | AnimeUnity scraper - Italian platform | ⚠️ Deploy Pending |
 | `/api/v1/animeya/*` | Animeya streaming platform | ✅ Active |
 | `/api/v1/hindidubbed/*` | Hindi dubbed anime scraper | ✅ Active |
 | `/api/v1/watchaw/*` | WatchAnimeWorld streaming | ✅ Active |
@@ -45,9 +47,7 @@
 | `/health` | Basic health check |
 | `/version` | API version info |
 | `/docs` | Interactive documentation |
-| `/info` | Detailed usage guide with examplesimeWorld multi-language streaming |
-| `/health` | Health check |
-| `/version` | API version info |
+| `/info` | Detailed usage guide with examples |
 
 ## Quick Start
 
@@ -169,15 +169,23 @@ Bu bölüm, geliştirme sırasında denenen sağlayıcıların neden çalıştı
 	- **Durum**: ✅ Çalışıyor
 	- **Nasıl**: Özel scraper ve parser modülleri
 
-3. **Animeya** (`/api/v1/animeya/*`)
+3. **GogoAnime** (`/api/v1/gogoanime/*`)
+	- **Durum**: ⚠️ Testing (Domain değişikliği tespit edildi)
+	- **Nasıl**: GogoAnime platform scraper
+
+4. **AniList** (`/api/v1/anilist/*`)
+	- **Durum**: ✅ Çalışıyor - Official API
+	- **Nasıl**: AniList GraphQL API wrapper (metadata, trending, popular, schedule)
+
+5. **Animeya** (`/api/v1/animeya/*`)
 	- **Durum**: ✅ Çalışıyor
 	- **Nasıl**: Animeya streaming platform entegrasyonu
 
-4. **HindiDubbed** (`/api/v1/hindidubbed/*`)
+6. **HindiDubbed** (`/api/v1/hindidubbed/*`)
 	- **Durum**: ✅ Çalışıyor
 	- **Nasıl**: animehindidubbed.in scraper
 
-5. **WatchAnimeWorld** (`/api/v1/watchaw/*`)
+7. **WatchAnimeWorld** (`/api/v1/watchaw/*`)
 	- **Durum**: ✅ Çalışıyor
 	- **Nasıl**: WatchAnimeWorld scraper
 
