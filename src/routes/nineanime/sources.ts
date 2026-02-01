@@ -11,8 +11,8 @@ export async function getEpisodeLink(c: Context) {
     const watchHtml = await fetchHtml(watchUrl);
     const $watch = cheerio.load(watchHtml);
 
-    const internalId = $watch("div[data-id]").attr("data-id");
-
+    // Corrected selector: #wrapper has data-id attribute
+    const internalId = $watch("#wrapper[data-id]").attr("data-id");
     if (!internalId) {
       return c.json(
         { success: false, error: "Could not find anime ID" },
@@ -97,8 +97,8 @@ export async function getEpisodeSources(c: Context) {
     const watchHtml = await fetchHtml(watchUrl);
     const $watch = cheerio.load(watchHtml);
 
-    const internalId = $watch("div[data-id]").attr("data-id");
-
+    // Corrected selector: #wrapper has data-id attribute
+    const internalId = $watch("#wrapper[data-id]").attr("data-id");
     if (!internalId) {
       return c.json(
         { success: false, error: "Could not find anime ID" },

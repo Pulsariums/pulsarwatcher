@@ -10,16 +10,17 @@ export async function getAnimeInfo(c: Context) {
     const html = await fetchHtml(`${SITE_URL}/watch/${id}`);
     const $ = cheerio.load(html);
 
-    const title = $("h1.film-title").text().trim();
-    const description = $("div.film-description p").text().trim();
-    const poster = $("img.film-poster").attr("src") || "";
-
-    const episodesText = $("div.film-stats span:contains('Episodes')").text();
+    // Corrected selectors for 9animetv.to
+    const title = $("h2.film-name.dynamic-name").text().trim();
+    const description = $("div.film-description").text().trim();
+    const poster = $("img.film-poster-img").attr("data-src") || $("img.film-poster-img").attr("src") || "";
+    
+    // Get episodes count from breadcrumb or info
+    const episodesText = $("span.item:contains('Episodes')").text();
     const episodesMatch = episodesText.match(/(\d+)/);
     const episodes = episodesMatch ? parseInt(episodesMatch[1]) : 0;
 
-    const ratingText = $("span.film-rating").text();
-    const rating = parseFloat(ratingText) || 0;
+    const rating = parseFloat($("span.score").text()) || 0;
 
     const data = {
       id,
@@ -53,8 +54,8 @@ export async function getEpisodesList(c: Context) {
     const watchHtml = await fetchHtml(watchUrl);
     const $watch = cheerio.load(watchHtml);
 
-    const internalId = $watch("div[data-id]").attr("data-id");
-
+    // Corrected selector: #wrapper has data-id attribute
+    const internalId = $watch("#wrapper[data-id]").attr("data-id");
     if (!internalId) {
       return c.json(
         { success: false, error: "Could not find anime ID" },
