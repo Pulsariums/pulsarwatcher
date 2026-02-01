@@ -57,3 +57,16 @@ Search Animeland (animeland.tv).
 ```bash
 curl -X GET "http://localhost:4000/api/v1/anime/animeland/dragon%20ball"
 ```
+
+## 5. 9AnimeTV
+
+Search 9AnimeTV (9animetv.to).
+- **URL**: `/anime/9animetv/:query`
+- **Method**: `GET`
+- **Response**: Array of `{ title, link, img, episodes }`
+
+### 🧪 Test Module
+
+```bash
+curl -X GET "http://localhost:4000/api/v1/anime/9animetv/naruto"
+```

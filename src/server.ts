@@ -63,7 +63,7 @@ app.get("/version", (c) =>
 app.get(`${BASE_PATH}/docs/llm`, async (c) => {
     try {
         const docsDir = path.join(process.cwd(), "src", "docs");
-        const files = ["intro.md", "hianime.md", "animeya.md", "sdk.md", "regional.md", "utility.md", "external.md"];
+        const files = ["intro.md", "hianime.md", "nineanime.md", "animeya.md", "sdk.md", "regional.md", "utility.md", "external.md"];
         let fullContent = "Tatakai API — FULL DOCUMENTATION\n\n";
 
         fullContent += "NOTE: This document concatenates all documentation files. Each file is delimited with BEGIN/END markers to help LLM consumption.\n\n";
@@ -82,7 +82,7 @@ app.get(`${BASE_PATH}/docs/llm`, async (c) => {
 app.get("/docs-content/:section", async (c) => {
     const section = c.req.param("section");
     // Secure filepath to prevent directory traversal
-    const safeSections = ["intro", "hianime", "anikai", "animeya", "sdk", "regional", "utility", "external", "llm"];
+    const safeSections = ["intro", "hianime", "nineanime", "anikai", "animeya", "sdk", "regional", "utility", "external", "llm"];
 
     if (!safeSections.includes(section)) {
         return c.json({ error: "Invalid section" }, 404);
@@ -92,7 +92,7 @@ app.get("/docs-content/:section", async (c) => {
         if (section === "llm") {
             // Generate LLM-friendly concatenated documentation
             const docsDir = path.join(process.cwd(), "src", "docs");
-            const files = ["intro.md", "hianime.md", "anikai.md", "animeya.md", "sdk.md", "regional.md", "utility.md", "external.md"];
+            const files = ["intro.md", "hianime.md", "nineanime.md", "anikai.md", "animeya.md", "sdk.md", "regional.md", "utility.md", "external.md"];
             let fullContent = "Tatakai API — FULL DOCUMENTATION\n\n";
 
             fullContent += "NOTE: This document concatenates all documentation files. Each file is delimited with BEGIN/END markers to help LLM consumption.\n\n";
@@ -240,6 +240,10 @@ Introduction
             <svg class="w-4 h-4 text-blue-400/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /> </svg>
 HiAnime
     </button>
+        <button onclick="loadSection('nineanime')" class="sidebar-link w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-zinc-400 border border-transparent hover:bg-zinc-900 hover:text-zinc-200 transition-all flex items-center gap-3">
+            <svg class="w-4 h-4 text-cyan-400/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" /> </svg>
+            NineAnime
+        </button>
     <button onclick="loadSection('anikai')" class="sidebar-link w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-zinc-400 border border-transparent hover:bg-zinc-900 hover:text-zinc-200 transition-all flex items-center gap-3">
         <svg class="w-4 h-4 text-purple-400/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /> <polyline points="3.27 6.96 12 12.01 20.73 6.96" /> <line x1="12" y1="22.08" x2="12" y2="12" /> </svg>
 Anikai
@@ -364,7 +368,7 @@ LLM Context
                                                                     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"> </script>
                                                                         <script>
 // Navigation Logic
-const sections=['intro', 'hianime', 'anikai', 'animeya', 'regional', 'external', 'utility', 'sdk'];
+const sections=['intro', 'hianime', 'nineanime', 'anikai', 'animeya', 'regional', 'external', 'utility', 'sdk'];
 let currentSection='${sectionParam}';
 
 const searchInput=document.getElementById('searchInput');
@@ -594,17 +598,47 @@ app.get("/", (c) =>
         provider: "Tatakai",
         message: "🎌 Welcome to Tatakai API!",
         version: pkgJson.version,
+        docs: "/docs",
+        basePath: BASE_PATH,
         endpoints: {
             hianime: `${BASE_PATH}/hianime`,
+            nineanime: `${BASE_PATH}/nineanime`,
             consumet: `${BASE_PATH}/consumet`,
+            animeScrapers: `${BASE_PATH}/anime`,
+            meta: `${BASE_PATH}/anime-api`,
             regional: {
                 hindiDubbed: `${BASE_PATH}/hindidubbed`,
                 animelok: `${BASE_PATH}/animelok`,
                 watchaw: `${BASE_PATH}/watchaw`,
                 desidubanime: `${BASE_PATH}/desidubanime`,
-            },
-            meta: `${BASE_PATH}/anime-api`,
+            }
+        },
+        quickstart: {
+            hianimeSearch: `${BASE_PATH}/hianime/search?q=naruto`,
+            nineanimeSearch: `${BASE_PATH}/nineanime/search?q=naruto`,
+            nineanimeTrending: `${BASE_PATH}/nineanime/trending?page=1`,
+            animeScraperSearch: `${BASE_PATH}/anime/9animetv/naruto`,
             docs: "/docs"
+        },
+        examples: [
+            {
+                name: "HiAnime search",
+                curl: `curl \"https://YOUR_DOMAIN${BASE_PATH}/hianime/search?q=naruto\"`
+            },
+            {
+                name: "NineAnime search",
+                curl: `curl \"https://YOUR_DOMAIN${BASE_PATH}/nineanime/search?q=naruto\"`
+            },
+            {
+                name: "9AnimeTV (anime scrapers)",
+                curl: `curl \"https://YOUR_DOMAIN${BASE_PATH}/anime/9animetv/naruto\"`
+            }
+        ],
+        notes: {
+            cors: "CORS is enabled for public access",
+            rateLimit: "Rate limiting may apply to heavy usage",
+            caching: "Some endpoints are cached to improve performance",
+            serverless: "Optimized for Vercel/Serverless"
         }
     })
 );
