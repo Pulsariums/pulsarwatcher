@@ -232,12 +232,15 @@ app.get("/info", (c) => {
                             <div>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
-                                    <code class="text-brand">/api/v1/hianime/episode/sources?animeEpisodeId={id}</code>
+                                    <code class="text-brand">/api/v1/hianime/episode/sources?animeEpisodeId={episodeId}</code>
                                 </div>
-                                <p class="text-sm text-zinc-400 mb-3">Bölüm izleme kaynakları</p>
+                                <p class="text-sm text-zinc-400 mb-3">Bölüm izleme kaynakları (episodeId formatı: anime-id?ep=episode_number)</p>
                                 <div class="code-block group">
                                     <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-sources-curl')">Copy</button>
-                                    <pre id="hianime-sources-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/episode/sources?animeEpisodeId=naruto-677?ep=1"</pre>
+                                    <pre id="hianime-sources-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/episode/sources?animeEpisodeId=naruto-677?ep=12352"</pre>
+                                </div>
+                                <div class="mt-2">
+                                    <p class="text-xs text-zinc-500 mb-1">💡 İpucu: Episode ID'yi /anime/{id}/episodes endpoint'inden alabilirsiniz</p>
                                 </div>
                             </div>
                         </div>
@@ -329,14 +332,15 @@ app.get("/info", (c) => {
                                 <h2 class="text-2xl font-bold text-white mb-1">AnimeUnity</h2>
                                 <p class="text-sm text-zinc-400">İtalyan anime platformu - Yeni eklenen scraper</p>
                             </div>
-                            <span class="badge badge-active">✅ AKTIF</span>
+                            <span class="badge badge-maintenance">⚠️ Deploy Bekliyor</span>
                         </div>
 
                         <div class="space-y-4">
                             <div>
+                                <p class="text-sm text-zinc-400 mb-3">Bu scraper henüz production'a deploy edilmemiş. Yakında aktif olacak.</p>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
-                                    <code class="text-brand">/api/v1/animeunity/search?q=naruto</code>
+                                    <code class="text-zinc-500">/api/v1/animeunity/search?q=naruto</code>
                                 </div>
                                 <div class="code-block group">
                                     <button class="copy-btn" onclick="copyToClipboard(this, 'animeunity-search-curl')">Copy</button>
@@ -347,7 +351,7 @@ app.get("/info", (c) => {
                             <div>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
-                                    <code class="text-brand">/api/v1/animeunity/info/{id}</code>
+                                    <code class="text-zinc-500">/api/v1/animeunity/info/{id}</code>
                                 </div>
                                 <div class="code-block group">
                                     <button class="copy-btn" onclick="copyToClipboard(this, 'animeunity-info-curl')">Copy</button>
@@ -358,7 +362,7 @@ app.get("/info", (c) => {
                             <div>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
-                                    <code class="text-brand">/api/v1/animeunity/trending</code>
+                                    <code class="text-zinc-500">/api/v1/animeunity/trending</code>
                                 </div>
                                 <div class="code-block group">
                                     <button class="copy-btn" onclick="copyToClipboard(this, 'animeunity-trending-curl')">Copy</button>
@@ -477,12 +481,17 @@ curl "https://pulsarwatcher.vercel.app/api/v1/hianime/search?q=naruto"
 
 ### Anime Detayı
 \\\`\\\`\\\`bash
-curl "https://pulsarwatcher.vercel.app/api/v1/hianime/anime/{animeId}"
+curl "https://pulsarwatcher.vercel.app/api/v1/hianime/anime/naruto-677"
 \\\`\\\`\\\`
 
-### Bölüm Kaynakları
+### Bölümler Listesi
 \\\`\\\`\\\`bash
-curl "https://pulsarwatcher.vercel.app/api/v1/hianime/episode/sources?animeEpisodeId={id}"
+curl "https://pulsarwatcher.vercel.app/api/v1/hianime/anime/naruto-677/episodes"
+\\\`\\\`\\\`
+
+### Bölüm Kaynakları (Episode ID gerekli - formatı: anime-id?ep=episode_number)
+\\\`\\\`\\\`bash
+curl "https://pulsarwatcher.vercel.app/api/v1/hianime/episode/sources?animeEpisodeId=naruto-677?ep=12352"
 \\\`\\\`\\\`
 
 ## NineAnime Endpoints
