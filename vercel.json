@@ -1,28 +1,18 @@
 {
   "version": 2,
   "buildCommand": "npm run build",
-  "outputDirectory": ".output",
-  "env": {
-    "PORT": "4000",
-    "NODE_ENV": "production",
-    "DEPLOYMENT_ENV": "vercel",
-    "CORS_ALLOWED_ORIGINS": "*"
-  },
-  "functions": {
-    "src/server.ts": {
-      "runtime": "nodejs20.x",
-      "memory": 1024,
-      "maxDuration": 60
+  "installCommand": "npm install",
+  "framework": null,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node"
     }
-  },
-  "rewrites": [
+  ],
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/src/server.ts"
-    },
-    {
-      "source": "/docs",
-      "destination": "/src/server.ts"
+      "src": "/(.*)",
+      "dest": "/"
     }
   ]
 }
