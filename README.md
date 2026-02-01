@@ -85,6 +85,45 @@ Bu API, farklı anime sağlayıcılarını tek bir çatı altında birleştirir.
 
 Özetle: `server.ts` yönlendirir → router veri toplar → normalize eder → cache/limit uygulanır → JSON yanıt döner.
 
+## Site Bazlı Durum Özeti (Neyi Neden Yaptık / Yapamadık)
+
+Bu bölüm, geliştirme sırasında denenen sağlayıcıların neden çalıştığını veya neden çalışmadığını tek tek açıklar.
+
+### ✅ Çalışanlar (Nasıl Yaptık?)
+
+1. **NineAnime (9animetv.to)**
+	- **Yöntem**: HTML sayfalarından `flw-item` kartlarını `cheerio` ile parse ediyoruz.
+	- **Neden çalışıyor?** 9animetv.to arama sonuçları HTML içinde doğrudan geliyor (JS render zorunlu değil).
+	- **Not**: Bölüm kaynakları sayfası JS ile yüklendiği için `/episode/sources` sınırlı olabilir.
+
+2. **9AnimeTV (External Scrapers altında `/anime/9animetv/:query`)**
+	- **Yöntem**: `/search?keyword=...` HTML çıktısı parse edilerek listeleniyor.
+	- **Neden çalışıyor?** Arama sonuçları HTML içinde görünüyor, basit scraping yeterli.
+
+3. **HiAnime (mevcut Tatakai sağlayıcısı)**
+	- **Yöntem**: Orijinal Tatakai router’ı ile API/HTML parse.
+	- **Neden çalışıyor?** Stable endpoint/selector yapısı ve halihazırda çalışan entegrasyon.
+
+### ⚠️ Yapamadıklarımız (Neden?)
+
+1. **9anime.to**
+	- **Sorun**: Arama sayfası gerçek sonuç yerine statik “landing” HTML döndürüyor.
+	- **Sonuç**: HTML’de liste yok, scraping yapılamadı.
+
+2. **Aniwave (aniwave.to)**
+	- **Sorun**: Zaman aşımı ve/veya farklı domain’e yönlendirme (erişim stabil değil).
+	- **Sonuç**: Sürekli veri alınamadığı için entegrasyon güvenilir değil.
+
+3. **AnimePahe (animepahe.ru)**
+	- **Sorun**: DNS/erişim problemi (host çözülemiyor).
+	- **Sonuç**: Sunucuya erişim yok, entegrasyon mümkün değil.
+
+4. **AnimeHeaven**
+	- **Sorun**: Arama sonucu HTML içinde doğrudan listelenmiyor, JS üzerinden `fastsearch.php` ile geliyor.
+	- **Sonuç**: Basit HTML scraping yetersiz; ek endpoint çözümü gerekiyor.
+
+> İleride yapılacaklar: JS ile render edilen siteler için **headless** veya **doğrudan AJAX endpoint** çözümü eklenebilir.
+
 ## Testing
 
 Run the comprehensive test suite to validate all API endpoints:
