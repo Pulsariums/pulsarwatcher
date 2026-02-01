@@ -41,7 +41,7 @@ export const env = cleanEnv(process.env, {
     }),
 
     // Cache
-    CACHE_TTL_SECONDS: num({ default: 300, desc: "Default cache TTL" }),
+    CACHE_TTL_SECONDS: num({ default: 1800, desc: "Default cache TTL" }),
 
     // Deployment
     API_HOSTNAME: str({ default: "", desc: "API hostname for health checks" }),

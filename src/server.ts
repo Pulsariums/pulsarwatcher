@@ -699,6 +699,42 @@ app.get("/info", (c) => {
                                             <pre id="anilist-schedule-curl">curl "https://pulsarwatcher.vercel.app/api/v1/anilist/schedule"</pre>
                                         </div>
                                     </div>
+
+                                    <div>
+                                        <div class="flex items-center mb-2">
+                                            <span class="method-badge method-get">GET</span>
+                                            <code class="text-brand">/api/v1/anilist/seasonal?season=WINTER&year=2026</code>
+                                        </div>
+                                        <p class="text-sm text-zinc-400 mb-2">✅ Sezonluk animeler (WINTER, SPRING, SUMMER, FALL)</p>
+                                        <div class="code-block group">
+                                            <button class="copy-btn" onclick="copyToClipboard(this, 'anilist-seasonal-curl')">Copy</button>
+                                            <pre id="anilist-seasonal-curl">curl "https://pulsarwatcher.vercel.app/api/v1/anilist/seasonal?season=WINTER&year=2026"</pre>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex items-center mb-2">
+                                            <span class="method-badge method-get">GET</span>
+                                            <code class="text-brand">/api/v1/anilist/top-rated</code>
+                                        </div>
+                                        <p class="text-sm text-zinc-400 mb-2">✅ En yüksek puanlı animeler</p>
+                                        <div class="code-block group">
+                                            <button class="copy-btn" onclick="copyToClipboard(this, 'anilist-top-rated-curl')">Copy</button>
+                                            <pre id="anilist-top-rated-curl">curl "https://pulsarwatcher.vercel.app/api/v1/anilist/top-rated"</pre>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex items-center mb-2">
+                                            <span class="method-badge method-get">GET</span>
+                                            <code class="text-brand">/api/v1/anilist/upcoming</code>
+                                        </div>
+                                        <p class="text-sm text-zinc-400 mb-2">✅ Yaklaşan animeler (NOT_YET_RELEASED)</p>
+                                        <div class="code-block group">
+                                            <button class="copy-btn" onclick="copyToClipboard(this, 'anilist-upcoming-curl')">Copy</button>
+                                            <pre id="anilist-upcoming-curl">curl "https://pulsarwatcher.vercel.app/api/v1/anilist/upcoming"</pre>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

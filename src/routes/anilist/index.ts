@@ -334,4 +334,172 @@ anilistRouter.get("/schedule", async (c) => {
     return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
+// ========== SEASONAL ANIME ==========
+anilistRouter.get("/seasonal", async (c) => {
+    const cacheConfig = c.get("CACHE_CONFIG");
+    const season = (c.req.query("season") || "WINTER").toUpperCase();
+    const year = parseInt(c.req.query("year") || new Date().getFullYear().toString());
+    const page = parseInt(c.req.query("page") || "1");
+    const perPage = parseInt(c.req.query("perPage") || "20");
+
+    const data = await cache.getOrSet(async () => {
+        log.info(`[AniList] Getting seasonal anime: ${season} ${year}, page ${page}`);
+
+        const gqlQuery = `
+            query ($season: MediaSeason, $year: Int, $page: Int, $perPage: Int) {
+                Page(page: $page, perPage: $perPage) {
+                    pageInfo {
+                        total
+                        currentPage
+                        lastPage
+                        hasNextPage
+                    }
+                    media(season: $season, seasonYear: $year, type: ANIME, sort: POPULARITY_DESC) {
+                        id
+                        title {
+                            romaji
+                            english
+                            native
+                        }
+                        coverImage {
+                            large
+                            medium
+                        }
+                        bannerImage
+                        format
+                        status
+                        episodes
+                        season
+                        seasonYear
+                        averageScore
+                        genres
+                    }
+                }
+            }
+        `;
+
+        const result = await queryAniList(gqlQuery, { season, year, page, perPage });
+
+        return {
+            results: result.Page.media,
+            pageInfo: result.Page.pageInfo,
+            season,
+            year,
+        };
+    }, cacheConfig.key, cacheConfig.duration);
+
+    return c.json({ provider: "PulsarWatch", status: 200, data });
+});
+
+// ========== TOP RATED ==========
+anilistRouter.get("/top-rated", async (c) => {
+    const cacheConfig = c.get("CACHE_CONFIG");
+    const page = parseInt(c.req.query("page") || "1");
+    const perPage = parseInt(c.req.query("perPage") || "20");
+
+    const data = await cache.getOrSet(async () => {
+        log.info(`[AniList] Getting top rated anime: page ${page}`);
+
+        const gqlQuery = `
+            query ($page: Int, $perPage: Int) {
+                Page(page: $page, perPage: $perPage) {
+                    pageInfo {
+                        total
+                        currentPage
+                        lastPage
+                        hasNextPage
+                    }
+                    media(type: ANIME, sort: SCORE_DESC) {
+                        id
+                        title {
+                            romaji
+                            english
+                            native
+                        }
+                        coverImage {
+                            large
+                            medium
+                        }
+                        bannerImage
+                        format
+                        status
+                        episodes
+                        season
+                        seasonYear
+                        averageScore
+                        genres
+                    }
+                }
+            }
+        `;
+
+        const result = await queryAniList(gqlQuery, { page, perPage });
+
+        return {
+            results: result.Page.media,
+            pageInfo: result.Page.pageInfo,
+        };
+    }, cacheConfig.key, cacheConfig.duration);
+
+    return c.json({ provider: "PulsarWatch", status: 200, data });
+});
+
+// ========== UPCOMING ANIME ==========
+anilistRouter.get("/upcoming", async (c) => {
+    const cacheConfig = c.get("CACHE_CONFIG");
+    const page = parseInt(c.req.query("page") || "1");
+    const perPage = parseInt(c.req.query("perPage") || "20");
+
+    const data = await cache.getOrSet(async () => {
+        log.info(`[AniList] Getting upcoming anime: page ${page}`);
+
+        const gqlQuery = `
+            query ($page: Int, $perPage: Int) {
+                Page(page: $page, perPage: $perPage) {
+                    pageInfo {
+                        total
+                        currentPage
+                        lastPage
+                        hasNextPage
+                    }
+                    media(status: NOT_YET_RELEASED, type: ANIME, sort: POPULARITY_DESC) {
+                        id
+                        title {
+                            romaji
+                            english
+                            native
+                        }
+                        coverImage {
+                            large
+                            medium
+                        }
+                        bannerImage
+                        format
+                        status
+                        episodes
+                        season
+                        seasonYear
+                        averageScore
+                        genres
+                        startDate {
+                            year
+                            month
+                            day
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await queryAniList(gqlQuery, { page, perPage });
+
+        return {
+            results: result.Page.media,
+            pageInfo: result.Page.pageInfo,
+        };
+    }, cacheConfig.key, cacheConfig.duration);
+
+    return c.json({ provider: "PulsarWatch", status: 200, data });
+});
+
 export { anilistRouter };
