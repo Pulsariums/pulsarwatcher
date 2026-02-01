@@ -8,11 +8,12 @@ scraperRegistry.register({
     status: "active",
     version: "2.0.0",
     baseUrl: "/api/v1/nineanime",
-    features: ["search", "trending", "latest", "info", "episodes", "sources"],
+    features: ["search", "trending", "latest", "popular", "info", "episodes", "sources"],
     endpoints: {
         search: "/api/v1/nineanime/search?q={query}&page={page}",
         trending: "/api/v1/nineanime/trending?page={page}",
         latest: "/api/v1/nineanime/latest?page={page}",
+        popular: "/api/v1/nineanime/popular?page={page}",
         info: "/api/v1/nineanime/info/{id}",
         episodes: "/api/v1/nineanime/episodes/{id}",
         sources: "/api/v1/nineanime/episode/sources?id={id}&ep={number}",

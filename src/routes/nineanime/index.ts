@@ -1,5 +1,5 @@
 import { Hono } from "hono";
-import { searchAnime, getTrending, getLatest } from "./browse.js";
+import { searchAnime, getTrending, getLatest, getPopular } from "./browse.js";
 import { getAnimeInfo, getEpisodesList } from "./info.js";
 import { getEpisodeLink, getEpisodeSources } from "./sources.js";
 import type { ServerContext } from "../../config/context.js";
@@ -16,6 +16,7 @@ nineanimeRouter.get("/", (c: any) => {
       search: "/api/v1/nineanime/search?q=query&page=1",
       trending: "/api/v1/nineanime/trending?page=1",
       latest: "/api/v1/nineanime/latest?page=1",
+      popular: "/api/v1/nineanime/popular?page=1",
       info: "/api/v1/nineanime/info/:id",
       episodes: "/api/v1/nineanime/episodes/:id",
       episodeLink: "/api/v1/nineanime/episode/:id/:ep",
@@ -25,6 +26,7 @@ nineanimeRouter.get("/", (c: any) => {
       "Search anime by keyword",
       "Browse trending anime",
       "Get latest episodes",
+      "Browse popular anime (most viewed)",
       "Fetch anime details",
       "List all episodes for an anime",
       "Get direct episode video link",
@@ -37,6 +39,7 @@ nineanimeRouter.get("/", (c: any) => {
 nineanimeRouter.get("/search", searchAnime);
 nineanimeRouter.get("/trending", getTrending);
 nineanimeRouter.get("/latest", getLatest);
+nineanimeRouter.get("/popular", getPopular);
 
 // Info endpoints
 nineanimeRouter.get("/info/:id", getAnimeInfo);

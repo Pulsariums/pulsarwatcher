@@ -378,6 +378,19 @@ app.get("/info", (c) => {
                                 </div>
                             </div>
 
+                            <!-- Popular -->
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/nineanime/popular?page=1</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">✅ En popüler anime (most viewed)</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'nineanime-popular-curl')">Copy</button>
+                                    <pre id="nineanime-popular-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/popular?page=1"</pre>
+                                </div>
+                            </div>
+
                             <!-- Info -->
                             <div>
                                 <div class="flex items-center mb-2">

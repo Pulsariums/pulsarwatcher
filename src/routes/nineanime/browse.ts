@@ -92,3 +92,69 @@ export async function getLatest(c: Context) {
     );
   }
 }
+
+export async function getPopular(c: Context) {
+  try {
+    const page = c.req.query("page") || "1";
+
+    // Most popular anime (sort by popularity/views)
+    const url = `${SITE_URL}/filter?sort=most_viewed&page=${page}`;
+    const html = await fetchHtml(url);
+    const $ = cheerio.load(html);
+
+    const animes = parseAnimeCards($);
+
+    return c.json({
+      success: true,
+      data: animes,
+      page: parseInt(page),
+    });
+  } catch (error: any) {
+    return c.json(
+      {
+        success: false,
+        error: error.message || "Failed to fetch popular",
+      },
+      500
+    );
+  }
+}
+
+export async function getSeasonal(c: Context) {
+  try {
+    const page = c.req.query("page") || "1";
+    const season = c.req.query("season") || getCurrentSeason();
+    const year = c.req.query("year") || new Date().getFullYear().toString();
+
+    // Seasonal anime (filter by season and year)
+    const url = `${SITE_URL}/filter?season=${season}&year=${year}&page=${page}`;
+    const html = await fetchHtml(url);
+    const $ = cheerio.load(html);
+
+    const animes = parseAnimeCards($);
+
+    return c.json({
+      success: true,
+      data: animes,
+      season,
+      year,
+      page: parseInt(page),
+    });
+  } catch (error: any) {
+    return c.json(
+      {
+        success: false,
+        error: error.message || "Failed to fetch seasonal",
+      },
+      500
+    );
+  }
+}
+
+function getCurrentSeason(): string {
+  const month = new Date().getMonth() + 1; // 1-12
+  if (month >= 1 && month <= 3) return "winter";
+  if (month >= 4 && month <= 6) return "spring";
+  if (month >= 7 && month <= 9) return "summer";
+  return "fall";
+}
