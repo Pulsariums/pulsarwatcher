@@ -33,8 +33,12 @@ nineanimeRouter.get("/search", async (c: Context) => {
       const id = $el.find("a.film-poster-ahref").attr("href")?.split("/").pop() || "";
       const title = $el.find("h3.film-name a").text().trim();
       const poster = $el.find("img.film-poster-img").attr("data-src") || $el.find("img.film-poster-img").attr("src") || "";
-      const type = $el.find("div.film-poster span.fdi-item:first").text().trim();
-      const episodes = $el.find("div.film-poster span.fdi-item:last").text().trim();
+      const type =
+        $el.find(".tick-item.tick-quality").text().trim() ||
+        $el.find("div.film-poster span.fdi-item:first").text().trim();
+      const episodes =
+        $el.find(".tick-item.tick-eps").text().trim() ||
+        $el.find("div.film-poster span.fdi-item:last").text().trim();
 
       if (id && title) {
         results.push({
@@ -86,7 +90,9 @@ nineanimeRouter.get("/trending", async (c: Context) => {
       const id = $el.find("a.film-poster-ahref").attr("href")?.split("/").pop() || "";
       const title = $el.find("h3.film-name a").text().trim();
       const poster = $el.find("img.film-poster-img").attr("data-src") || $el.find("img.film-poster-img").attr("src") || "";
-      const type = $el.find("div.film-poster span.fdi-item:first").text().trim();
+      const type =
+        $el.find(".tick-item.tick-quality").text().trim() ||
+        $el.find("div.film-poster span.fdi-item:first").text().trim();
 
       if (id && title) {
         results.push({ id, title, poster, type, url: `${BASE_URL}/watch/${id}` });
@@ -148,11 +154,28 @@ nineanimeRouter.get("/info/:id", async (c: Context) => {
     const html = await response.text();
     const $ = cheerio.load(html);
 
-    const title = $("h1.film-name").text().trim();
-    const poster = $("img.film-poster-img").attr("src") || "";
-    const description = $("div.film-description").text().trim();
-    const type = $("span.item:contains('Type:')").next().text().trim();
-    const status = $("span.item:contains('Status:')").next().text().trim();
+      const title = $("h2.film-name").text().trim() || $("h1.film-name").text().trim();
+      const poster =
+        $("img.film-poster-img").attr("src") ||
+        $("img.film-poster-img").attr("data-src") ||
+        "";
+      const description =
+        $("div.film-description .shorting").text().trim() ||
+        $("div.film-description").text().trim();
+
+      const meta: Record<string, string> = {};
+      $(".item").each((_index, element) => {
+        const label = $(element).find(".item-title").text().trim().replace(/:$/, "");
+        const value = $(element).find(".item-content").text().trim();
+        if (label && value) {
+          meta[label.toLowerCase()] = value;
+        }
+      });
+
+      const type = meta.type || "";
+      const status = meta.status || "";
+
+      const internalId = $("#wrapper").attr("data-id") || "";
 
     const episodes: any[] = [];
     $("div.episodes-ul li a").each((_index, element) => {
@@ -169,18 +192,20 @@ nineanimeRouter.get("/info/:id", async (c: Context) => {
       }
     });
 
-    return c.json({
-      success: true,
-      data: {
-        id,
-        title,
-        poster,
-        description,
-        type,
-        status,
-        episodes,
-      },
-    });
+      return c.json({
+        success: true,
+        data: {
+          id,
+          title,
+          poster,
+          description,
+          type,
+          status,
+          episodes,
+          internalId,
+          episodeListUrl: internalId ? `${BASE_URL}/ajax/episode/list/${internalId}` : "",
+        },
+      });
   } catch (error: any) {
     return c.json({ success: false, error: error.message }, 500);
   }

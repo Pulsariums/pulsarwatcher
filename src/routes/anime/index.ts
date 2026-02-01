@@ -123,12 +123,45 @@ animeRouter.get("/animeland/:query", async (c) => {
     return c.json({ provider: "Tatakai", status: 200, data: results });
 });
 
+    // ========== 9ANIMETV PORT ==========
+    const NINEANIMETV_URL = "https://9animetv.to";
+
+    animeRouter.get("/9animetv/:query", async (c) => {
+        const cacheConfig = c.get("CACHE_CONFIG");
+        const query = c.req.param("query");
+
+        const results = await cache.getOrSet(async () => {
+            const html = await fetchHtml(`${NINEANIMETV_URL}/search?keyword=${encodeURIComponent(query)}`);
+            const $ = cheerio.load(html);
+            const list: any[] = [];
+
+            $("div.flw-item").each((_, el) => {
+                const title = $(el).find(".film-name a").text().trim();
+                const link = $(el).find("a.film-poster-ahref").attr("href");
+                const img = $(el).find("img.film-poster-img").attr("data-src") || $(el).find("img.film-poster-img").attr("src");
+                const episodes = $(el).find(".tick-item.tick-eps").text().trim();
+                if (title && link) {
+                    list.push({
+                        title,
+                        link: link.startsWith("http") ? link : `${NINEANIMETV_URL}${link}`,
+                        img,
+                        episodes,
+                    });
+                }
+            });
+
+            return list;
+        }, cacheConfig.key, cacheConfig.duration);
+
+        return c.json({ provider: "Tatakai", status: 200, data: results });
+    });
+
 // Root for /anime
 animeRouter.get("/", (c) => {
     return c.json({ provider: "Tatakai",
         status: 200,
         message: "External Anime Scrapers Ported from ANIME-API",
-        providers: ["gogoanime", "chia-anime", "anime-freak", "animeland"]
+        providers: ["gogoanime", "chia-anime", "anime-freak", "animeland", "9animetv"]
     });
 });
 
