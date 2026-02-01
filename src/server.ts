@@ -26,6 +26,7 @@ import "./routes/nineanime/registry.js";
 import "./routes/animeunity/registry.js";
 import "./routes/animeya/registry.js";
 import "./routes/gogoanime/registry.js";
+import "./routes/anilist/registry.js";
 
 // Import routes
 import { hianimeRouter } from "./routes/hianime/index.js";
@@ -39,6 +40,7 @@ import { desidubanimeRouter } from "./routes/desidubanime/index.js";
 import nineanimeRouter from "./routes/nineanime/index.js";
 import { animeunityRouter } from "./routes/animeunity/index.js";
 import { gogoanimeRouter } from "./routes/gogoanime/index.js";
+import { anilistRouter } from "./routes/anilist/index.js";
 
 import pkgJson from "../package.json" with { type: "json" };
 
@@ -528,12 +530,75 @@ app.get("/info", (c) => {
                         <div class="flex justify-between items-start mb-4">
                             <div>
                                 <h2 class="text-2xl font-bold text-white mb-1">Utility APIs</h2>
-                                <p class="text-sm text-zinc-400">Anime alıntıları, görseller, rastgele içerikler</p>
+                                <p class="text-sm text-zinc-400">Anime metadata, alıntıları, görseller, rastgele içerikler</p>
                             </div>
                             <span class="badge badge-active">✅ AKTIF</span>
                         </div>
 
                         <div class="space-y-4">
+                            <!-- AniList -->
+                            <div>
+                                <h3 class="text-lg font-semibold text-white mb-2">AniList API</h3>
+                                <p class="text-sm text-zinc-400 mb-3">Resmi AniList API wrapper - Anime metadata ve bilgileri</p>
+                                
+                                <div class="space-y-2">
+                                    <div>
+                                        <div class="flex items-center mb-2">
+                                            <span class="method-badge method-get">GET</span>
+                                            <code class="text-brand">/api/v1/anilist/search?q=naruto</code>
+                                        </div>
+                                        <div class="code-block group">
+                                            <button class="copy-btn" onclick="copyToClipboard(this, 'anilist-search-curl')">Copy</button>
+                                            <pre id="anilist-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/anilist/search?q=naruto"</pre>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex items-center mb-2">
+                                            <span class="method-badge method-get">GET</span>
+                                            <code class="text-brand">/api/v1/anilist/info/{id}</code>
+                                        </div>
+                                        <div class="code-block group">
+                                            <button class="copy-btn" onclick="copyToClipboard(this, 'anilist-info-curl')">Copy</button>
+                                            <pre id="anilist-info-curl">curl "https://pulsarwatcher.vercel.app/api/v1/anilist/info/20"</pre>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex items-center mb-2">
+                                            <span class="method-badge method-get">GET</span>
+                                            <code class="text-brand">/api/v1/anilist/trending</code>
+                                        </div>
+                                        <div class="code-block group">
+                                            <button class="copy-btn" onclick="copyToClipboard(this, 'anilist-trending-curl')">Copy</button>
+                                            <pre id="anilist-trending-curl">curl "https://pulsarwatcher.vercel.app/api/v1/anilist/trending"</pre>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex items-center mb-2">
+                                            <span class="method-badge method-get">GET</span>
+                                            <code class="text-brand">/api/v1/anilist/popular</code>
+                                        </div>
+                                        <div class="code-block group">
+                                            <button class="copy-btn" onclick="copyToClipboard(this, 'anilist-popular-curl')">Copy</button>
+                                            <pre id="anilist-popular-curl">curl "https://pulsarwatcher.vercel.app/api/v1/anilist/popular"</pre>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <div class="flex items-center mb-2">
+                                            <span class="method-badge method-get">GET</span>
+                                            <code class="text-brand">/api/v1/anilist/schedule</code>
+                                        </div>
+                                        <div class="code-block group">
+                                            <button class="copy-btn" onclick="copyToClipboard(this, 'anilist-schedule-curl')">Copy</button>
+                                            <pre id="anilist-schedule-curl">curl "https://pulsarwatcher.vercel.app/api/v1/anilist/schedule"</pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
@@ -1195,6 +1260,7 @@ app.route(`${BASE_PATH}/animeya`, animeyaRouter);
 app.route(`${BASE_PATH}/nineanime`, nineanimeRouter);
 app.route(`${BASE_PATH}/animeunity`, animeunityRouter);
 app.route(`${BASE_PATH}/gogoanime`, gogoanimeRouter);
+app.route(`${BASE_PATH}/anilist`, anilistRouter);
 app.route(`${BASE_PATH}/anime`, animeRouter);
 app.route(`${BASE_PATH}/anime-api`, animeApiRouter);
 app.route(`${BASE_PATH}/animelok`, animelokRouter);
