@@ -117,6 +117,378 @@ app.get("/docs-content/:section", async (c) => {
     }
 });
 
+app.get("/info", (c) => {
+    return c.html(`
+        <!DOCTYPE html>
+        <html lang="en" class="scroll-smooth">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Tatakai API | Endpoint Usage Guide</title>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+            <style>
+                :root {
+                    --brand: #0ea5e9;
+                    --bg: #050505;
+                    --bg-alt: #0a0a0a;
+                }
+                body { background: var(--bg); color: #e4e4e7; font-family: 'Outfit', sans-serif; }
+                .endpoint-card { background: var(--bg-alt); border: 1px solid #27272a; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+                .endpoint-card:hover { border-color: var(--brand); }
+                .code-block { background: #09090b; border: 1px solid #18181b; border-radius: 8px; padding: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; overflow-x: auto; position: relative; }
+                .copy-btn { position: absolute; top: 0.5rem; right: 0.5rem; background: #18181b; border: 1px solid #27272a; color: #71717a; padding: 0.375rem 0.75rem; border-radius: 6px; cursor: pointer; font-size: 0.75rem; }
+                .copy-btn:hover { color: white; border-color: var(--brand); }
+                .badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+                .badge-active { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid #22c55e; }
+                .badge-maintenance { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid #fbbf24; }
+                .method-badge { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; margin-right: 0.5rem; }
+                .method-get { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+                .download-btn { background: linear-gradient(135deg, var(--brand), #8b5cf6); color: white; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; }
+                .download-btn:hover { opacity: 0.9; }
+            </style>
+        </head>
+        <body class="p-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h1 class="text-4xl font-bold mb-2">Tatakai API Usage Guide</h1>
+                        <p class="text-zinc-400">Detaylı endpoint kullanım örnekleri ve cevap formatları</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="downloadGuide()" class="download-btn">📥 Rehberi İndir</button>
+                        <a href="/docs" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm">📖 Dokümantasyon</a>
+                    </div>
+                </div>
+
+                <div id="endpoints-container">
+                    <!-- HiAnime -->
+                    <div class="endpoint-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h2 class="text-2xl font-bold text-white mb-1">HiAnime</h2>
+                                <p class="text-sm text-zinc-400">Ana anime sağlayıcısı - Arama, bilgi, bölümler, kaynaklar</p>
+                            </div>
+                            <span class="badge badge-active">✅ AKTIF</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/hianime/search?q=naruto</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Anime arama işlemi</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-search-curl')">Copy</button>
+                                    <pre id="hianime-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/search?q=naruto"</pre>
+                                </div>
+                                <div class="mt-2">
+                                    <p class="text-xs text-zinc-500 mb-1">Örnek Yanıt:</p>
+                                    <div class="code-block">
+                                        <pre>{
+  "provider": "Tatakai",
+  "status": 200,
+  "data": {
+    "animes": [
+      {
+        "id": "naruto-677",
+        "name": "Naruto",
+        "poster": "https://...",
+        "episodes": { "sub": 220, "dub": 220 }
+      }
+    ]
+  }
+}</pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/hianime/anime/{animeId}</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Anime detay bilgisi</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-info-curl')">Copy</button>
+                                    <pre id="hianime-info-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/anime/naruto-677"</pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/hianime/episode/sources?animeEpisodeId={id}</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Bölüm izleme kaynakları</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-sources-curl')">Copy</button>
+                                    <pre id="hianime-sources-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/episode/sources?animeEpisodeId=naruto-677?ep=1"</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NineAnime -->
+                    <div class="endpoint-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h2 class="text-2xl font-bold text-white mb-1">NineAnime</h2>
+                                <p class="text-sm text-zinc-400">Alternatif scraper - Popüler ve güncel içerikler</p>
+                            </div>
+                            <span class="badge badge-active">✅ AKTIF</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/nineanime/search?q=frieren</code>
+                                </div>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'nineanime-search-curl')">Copy</button>
+                                    <pre id="nineanime-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/search?q=frieren"</pre>
+                                </div>
+                                <div class="mt-2">
+                                    <p class="text-xs text-zinc-500 mb-1">Örnek Yanıt:</p>
+                                    <div class="code-block">
+                                        <pre>{
+  "success": true,
+  "data": [
+    {
+      "id": "frieren-beyond-journeys-end-season-2-20409",
+      "title": "Frieren: Beyond Journey's End Season 2",
+      "poster": "https://..."
+    }
+  ]
+}</pre>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/nineanime/episodes/{animeId}</code>
+                                </div>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'nineanime-episodes-curl')">Copy</button>
+                                    <pre id="nineanime-episodes-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/episodes/frieren-beyond-journeys-end-season-2-20409"</pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/nineanime/episode/sources?id={id}&ep={number}</code>
+                                </div>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'nineanime-sources-curl')">Copy</button>
+                                    <pre id="nineanime-sources-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/episode/sources?id=frieren-beyond-journeys-end-season-2-20409&ep=3"</pre>
+                                </div>
+                                <div class="mt-2">
+                                    <p class="text-xs text-zinc-500 mb-1">Örnek Yanıt:</p>
+                                    <div class="code-block">
+                                        <pre>{
+  "success": true,
+  "data": {
+    "sources": [
+      {
+        "url": "https://rapid-cloud.co/embed-2/v2/...",
+        "quality": "default",
+        "isM3U8": false,
+        "type": "iframe"
+      }
+    ]
+  }
+}</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Regional Providers -->
+                    <div class="endpoint-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h2 class="text-2xl font-bold text-white mb-1">Regional Providers</h2>
+                                <p class="text-sm text-zinc-400">Bölgesel ve dil bazlı içerik sağlayıcıları</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="badge badge-active text-xs">✅ Hindi</span>
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/hindidubbed/search?title=naruto</code>
+                                </div>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'hindi-search-curl')">Copy</button>
+                                    <pre id="hindi-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hindidubbed/search?title=naruto"</pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="badge badge-active text-xs">✅ Watch</span>
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/watchaw/search?title=naruto</code>
+                                </div>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'watchaw-search-curl')">Copy</button>
+                                    <pre id="watchaw-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/watchaw/search?title=naruto"</pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="badge badge-maintenance text-xs">⚠️ Bakımda</span>
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-zinc-500">/api/v1/animelok/*</code>
+                                </div>
+                                <p class="text-xs text-zinc-500">Site geçici olarak ulaşılamıyor</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Utility APIs -->
+                    <div class="endpoint-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h2 class="text-2xl font-bold text-white mb-1">Utility APIs</h2>
+                                <p class="text-sm text-zinc-400">Anime alıntıları, görseller, rastgele içerikler</p>
+                            </div>
+                            <span class="badge badge-active">✅ AKTIF</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/anime-api/quotes</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Rastgele anime alıntısı</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'quotes-curl')">Copy</button>
+                                    <pre id="quotes-curl">curl "https://pulsarwatcher.vercel.app/api/v1/anime-api/quotes"</pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/anime-api/waifu</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Rastgele waifu görseli</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'waifu-curl')">Copy</button>
+                                    <pre id="waifu-curl">curl "https://pulsarwatcher.vercel.app/api/v1/anime-api/waifu"</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function copyToClipboard(btn, elementId) {
+                    const text = document.getElementById(elementId).textContent;
+                    navigator.clipboard.writeText(text).then(() => {
+                        btn.textContent = 'Copied!';
+                        btn.style.color = '#22c55e';
+                        setTimeout(() => {
+                            btn.textContent = 'Copy';
+                            btn.style.color = '';
+                        }, 2000);
+                    });
+                }
+
+                function downloadGuide() {
+                    const guide = \`# Tatakai API - Kullanım Rehberi
+
+## HiAnime Endpoints
+
+### Arama
+\\\`\\\`\\\`bash
+curl "https://pulsarwatcher.vercel.app/api/v1/hianime/search?q=naruto"
+\\\`\\\`\\\`
+
+### Anime Detayı
+\\\`\\\`\\\`bash
+curl "https://pulsarwatcher.vercel.app/api/v1/hianime/anime/{animeId}"
+\\\`\\\`\\\`
+
+### Bölüm Kaynakları
+\\\`\\\`\\\`bash
+curl "https://pulsarwatcher.vercel.app/api/v1/hianime/episode/sources?animeEpisodeId={id}"
+\\\`\\\`\\\`
+
+## NineAnime Endpoints
+
+### Arama
+\\\`\\\`\\\`bash
+curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/search?q=frieren"
+\\\`\\\`\\\`
+
+### Bölüm Listesi
+\\\`\\\`\\\`bash
+curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/episodes/{animeId}"
+\\\`\\\`\\\`
+
+### Bölüm Kaynakları
+\\\`\\\`\\\`bash
+curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/episode/sources?id={id}&ep={number}"
+\\\`\\\`\\\`
+
+## Regional Providers
+
+### HindiDubbed
+\\\`\\\`\\\`bash
+curl "https://pulsarwatcher.vercel.app/api/v1/hindidubbed/search?title=naruto"
+\\\`\\\`\\\`
+
+### WatchAW
+\\\`\\\`\\\`bash
+curl "https://pulsarwatcher.vercel.app/api/v1/watchaw/search?title=naruto"
+\\\`\\\`\\\`
+
+## Utility APIs
+
+### Anime Quotes
+\\\`\\\`\\\`bash
+curl "https://pulsarwatcher.vercel.app/api/v1/anime-api/quotes"
+\\\`\\\`\\\`
+
+### Random Waifu
+\\\`\\\`\\\`bash
+curl "https://pulsarwatcher.vercel.app/api/v1/anime-api/waifu"
+\\\`\\\`\\\`
+
+---
+Generated: \${new Date().toISOString()}
+\`;
+
+                    const blob = new Blob([guide], { type: 'text/markdown' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'tatakai-api-guide.md';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+            </script>
+        </body>
+        </html>
+    `);
+});
+
 app.get("/docs/:section?", (c) => {
     const sectionParam = c.req.param("section") || "intro";
     return c.html(`
