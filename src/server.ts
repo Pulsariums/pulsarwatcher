@@ -190,49 +190,85 @@ app.get("/info", (c) => {
                         </div>
 
                         <div class="space-y-4">
+                            <!-- Search -->
                             <div>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
                                     <code class="text-brand">/api/v1/hianime/search?q=naruto</code>
                                 </div>
-                                <p class="text-sm text-zinc-400 mb-3">Anime arama işlemi</p>
+                                <p class="text-sm text-zinc-400 mb-3">Anime arama işlemi - Gelişmiş filtreleme destekli</p>
                                 <div class="code-block group">
                                     <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-search-curl')">Copy</button>
-                                    <pre id="hianime-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/search?q=naruto"</pre>
-                                </div>
-                                <div class="mt-2">
-                                    <p class="text-xs text-zinc-500 mb-1">Örnek Yanıt:</p>
-                                    <div class="code-block">
-                                        <pre>{
-  "provider": "PulsarWatch",
-  "status": 200,
-  "data": {
-    "animes": [
-      {
-        "id": "naruto-677",
-        "name": "Naruto",
-        "poster": "https://...",
-        "episodes": { "sub": 220, "dub": 220 }
-      }
-    ]
-  }
-}</pre>
-                                    </div>
+                                    <pre id="hianime-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/search?q=naruto&page=1"</pre>
                                 </div>
                             </div>
 
+                            <!-- Home -->
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/hianime/home</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Ana sayfa - Spotlight ve trending animeler</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-home-curl')">Copy</button>
+                                    <pre id="hianime-home-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/home"</pre>
+                                </div>
+                            </div>
+
+                            <!-- Category (Most Popular) -->
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/hianime/category/{name}?page=1</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Kategoriye göre animeler (most-popular, most-favorite, completed, recently-updated, recently-added, top-upcoming, top-airing, movie, special, ova, ona, tv, subbed-anime, dubbed-anime)</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-category-curl')">Copy</button>
+                                    <pre id="hianime-category-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/category/most-popular?page=1"</pre>
+                                </div>
+                            </div>
+
+                            <!-- Genre -->
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/hianime/genre/{name}?page=1</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Türe göre animeler (action, adventure, comedy, drama, fantasy vb.)</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-genre-curl')">Copy</button>
+                                    <pre id="hianime-genre-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/genre/action?page=1"</pre>
+                                </div>
+                            </div>
+
+                            <!-- Info -->
                             <div>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
                                     <code class="text-brand">/api/v1/hianime/anime/{animeId}</code>
                                 </div>
-                                <p class="text-sm text-zinc-400 mb-3">Anime detay bilgisi</p>
+                                <p class="text-sm text-zinc-400 mb-3">Anime detay bilgisi - Tüm metadata ve related anime</p>
                                 <div class="code-block group">
                                     <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-info-curl')">Copy</button>
                                     <pre id="hianime-info-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/anime/naruto-677"</pre>
                                 </div>
                             </div>
 
+                            <!-- Episodes -->
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/hianime/anime/{animeId}/episodes</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Tüm bölümleri listele</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-episodes-curl')">Copy</button>
+                                    <pre id="hianime-episodes-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/anime/naruto-677/episodes"</pre>
+                                </div>
+                            </div>
+
+                            <!-- Sources -->
                             <div>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
@@ -245,6 +281,32 @@ app.get("/info", (c) => {
                                 </div>
                                 <div class="mt-2">
                                     <p class="text-xs text-zinc-500 mb-1">💡 İpucu: Episode ID'yi /anime/{id}/episodes endpoint'inden alabilirsiniz</p>
+                                </div>
+                            </div>
+
+                            <!-- Producer -->
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/hianime/producer/{name}?page=1</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Yapımcıya göre animeler (studio filtreleme)</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-producer-curl')">Copy</button>
+                                    <pre id="hianime-producer-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/producer/ufotable?page=1"</pre>
+                                </div>
+                            </div>
+
+                            <!-- Schedule -->
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/hianime/schedule?date={YYYY-MM-DD}</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Yayın programı - Anime takvimi</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'hianime-schedule-curl')">Copy</button>
+                                    <pre id="hianime-schedule-curl">curl "https://pulsarwatcher.vercel.app/api/v1/hianime/schedule?date=2026-02-01"</pre>
                                 </div>
                             </div>
                         </div>
@@ -261,69 +323,81 @@ app.get("/info", (c) => {
                         </div>
 
                         <div class="space-y-4">
+                            <!-- Search -->
                             <div>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
-                                    <code class="text-brand">/api/v1/nineanime/search?q=frieren</code>
+                                    <code class="text-brand">/api/v1/nineanime/search?q=frieren&page=1</code>
                                 </div>
+                                <p class="text-sm text-zinc-400 mb-3">Anime arama - Sayfalı sonuçlar</p>
                                 <div class="code-block group">
                                     <button class="copy-btn" onclick="copyToClipboard(this, 'nineanime-search-curl')">Copy</button>
-                                    <pre id="nineanime-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/search?q=frieren"</pre>
-                                </div>
-                                <div class="mt-2">
-                                    <p class="text-xs text-zinc-500 mb-1">Örnek Yanıt:</p>
-                                    <div class="code-block">
-                                        <pre>{
-  "success": true,
-  "data": [
-    {
-      "id": "frieren-beyond-journeys-end-season-2-20409",
-      "title": "Frieren: Beyond Journey's End Season 2",
-      "poster": "https://..."
-    }
-  ]
-}</pre>
-                                    </div>
+                                    <pre id="nineanime-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/search?q=frieren&page=1"</pre>
                                 </div>
                             </div>
 
+                            <!-- Trending -->
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-zinc-500">/api/v1/nineanime/trending?page=1</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">⚠️ Trend olan animeler (şu an çalışmıyor - site değişikliği)</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'nineanime-trending-curl')">Copy</button>
+                                    <pre id="nineanime-trending-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/trending?page=1"</pre>
+                                </div>
+                            </div>
+
+                            <!-- Latest -->
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-zinc-500">/api/v1/nineanime/latest?page=1</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">⚠️ En yeni bölümler (şu an çalışmıyor - site değişikliği)</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'nineanime-latest-curl')">Copy</button>
+                                    <pre id="nineanime-latest-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/latest?page=1"</pre>
+                                </div>
+                            </div>
+
+                            <!-- Info -->
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/nineanime/info/{animeId}</code>
+                                </div>
+                                <p class="text-sm text-zinc-400 mb-3">Anime detay bilgisi</p>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'nineanime-info-curl')">Copy</button>
+                                    <pre id="nineanime-info-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/info/frieren-beyond-journeys-end-season-2-20409"</pre>
+                                </div>
+                            </div>
+
+                            <!-- Episodes -->
                             <div>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
                                     <code class="text-brand">/api/v1/nineanime/episodes/{animeId}</code>
                                 </div>
+                                <p class="text-sm text-zinc-400 mb-3">Bölüm listesi</p>
                                 <div class="code-block group">
                                     <button class="copy-btn" onclick="copyToClipboard(this, 'nineanime-episodes-curl')">Copy</button>
                                     <pre id="nineanime-episodes-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/episodes/frieren-beyond-journeys-end-season-2-20409"</pre>
                                 </div>
                             </div>
 
+                            <!-- Sources -->
                             <div>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
                                     <code class="text-brand">/api/v1/nineanime/episode/sources?id={id}&ep={number}</code>
                                 </div>
+                                <p class="text-sm text-zinc-400 mb-3">Bölüm izleme kaynakları</p>
                                 <div class="code-block group">
                                     <button class="copy-btn" onclick="copyToClipboard(this, 'nineanime-sources-curl')">Copy</button>
                                     <pre id="nineanime-sources-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/episode/sources?id=frieren-beyond-journeys-end-season-2-20409&ep=3"</pre>
-                                </div>
-                                <div class="mt-2">
-                                    <p class="text-xs text-zinc-500 mb-1">Örnek Yanıt:</p>
-                                    <div class="code-block">
-                                        <pre>{
-  "success": true,
-  "data": {
-    "sources": [
-      {
-        "url": "https://rapid-cloud.co/embed-2/v2/...",
-        "quality": "default",
-        "isM3U8": false,
-        "type": "iframe"
-      }
-    ]
-  }
-}</pre>
-                                    </div>
                                 </div>
                             </div>
                         </div>
