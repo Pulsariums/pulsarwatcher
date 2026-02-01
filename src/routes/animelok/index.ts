@@ -95,7 +95,7 @@ animelokRouter.get("/home", async (c) => {
         return { sections };
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== SCHEDULE ==========
@@ -131,7 +131,7 @@ animelokRouter.get("/schedule", async (c) => {
         return { schedule };
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== LANGUAGES ==========
@@ -160,7 +160,7 @@ animelokRouter.get("/languages", async (c) => {
         return { languages: uniqueLanguages };
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== ANIME BY LANGUAGE ==========
@@ -206,7 +206,7 @@ animelokRouter.get("/languages/:language", async (c) => {
         return { language, page: parseInt(page), anime, hasNextPage };
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== ANIME INFO ==========
@@ -245,7 +245,7 @@ animelokRouter.get("/anime/:id", async (c) => {
         return { id, title, description, poster, rating, seasons };
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== WATCH (Episode Sources) ==========
@@ -279,13 +279,13 @@ animelokRouter.get("/watch/:id", async (c) => {
         return { id, episode: ep, title, servers, subtitles };
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== ROOT ==========
 animelokRouter.get("/", (c) => {
     return c.json({
-        provider: "Tatakai",
+        provider: "PulsarWatch",
         status: 200,
         message: "Animelok Scraper - Hindi Dubbed Anime with HiAnime-style IDs",
         endpoints: {

@@ -1,6 +1,6 @@
-# Tatakai API 🎌
+# PulsarWatch API 🎌
 
-> Unified Anime API combining HiAnime, regional scrapers, and utility APIs with modern caching, CORS, rate limiting, and logging.
+> Unified Anime API combining HiAnime, NineAnime, and regional scrapers with modern caching, CORS, rate limiting, and logging.
 
 ## Features
 
@@ -39,7 +39,7 @@
 
 ```bash
 # Clone and install
-cd TatakaiAPI
+cd pulsarwatcher
 npm install
 
 # Create .env file
@@ -56,8 +56,8 @@ npm run dev
 docker-compose up -d
 
 # Or build image only
-docker build -t tatakai-api .
-docker run -p 4000:4000 tatakai-api
+docker build -t pulsarwatch-api .
+docker run -p 4000:4000 pulsarwatch-api
 ```
 
 ## Configuration

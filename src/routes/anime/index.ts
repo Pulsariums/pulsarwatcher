@@ -41,7 +41,7 @@ animeRouter.get("/gogoanime/:query", async (c) => {
         return list;
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data: results });
+    return c.json({ provider: "PulsarWatch", status: 200, data: results });
 });
 
 // ========== CHIA-ANIME PORT ==========
@@ -69,7 +69,7 @@ animeRouter.get("/chia-anime/:query", async (c) => {
         return list;
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data: results });
+    return c.json({ provider: "PulsarWatch", status: 200, data: results });
 });
 
 // ========== ANIME-FREAK PORT ==========
@@ -94,7 +94,7 @@ animeRouter.get("/anime-freak/:query", async (c) => {
         }
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data: results });
+    return c.json({ provider: "PulsarWatch", status: 200, data: results });
 });
 
 // ========== ANIMELAND PORT ==========
@@ -120,7 +120,7 @@ animeRouter.get("/animeland/:query", async (c) => {
         return list;
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data: results });
+    return c.json({ provider: "PulsarWatch", status: 200, data: results });
 });
 
     // ========== 9ANIMETV PORT ==========
@@ -153,12 +153,12 @@ animeRouter.get("/animeland/:query", async (c) => {
             return list;
         }, cacheConfig.key, cacheConfig.duration);
 
-        return c.json({ provider: "Tatakai", status: 200, data: results });
+        return c.json({ provider: "PulsarWatch", status: 200, data: results });
     });
 
 // Root for /anime
 animeRouter.get("/", (c) => {
-    return c.json({ provider: "Tatakai",
+    return c.json({ provider: "PulsarWatch",
         status: 200,
         message: "External Anime Scrapers Ported from ANIME-API",
         providers: ["gogoanime", "chia-anime", "anime-freak", "animeland", "9animetv"]

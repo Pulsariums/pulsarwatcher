@@ -1,6 +1,6 @@
 # Introduction
 
-Welcome to the **Tatakai API** documentation. This API provides a unified interface for accessing anime, manga, light novels, and comics from various sources.
+Welcome to the **PulsarWatch API** documentation. This API provides a unified interface for accessing anime, manga, light novels, and comics from various sources.
 
 ## 🚀 Base URL
 
@@ -22,7 +22,7 @@ All responses follow a standard JSON structure:
 
 ## 🎬 Getting Started
 
-The quickest way to start using Tatakai API is via `fetch` or `curl`.
+The quickest way to start using PulsarWatch API is via `fetch` or `curl`.
 
 ### JavaScript Example
 

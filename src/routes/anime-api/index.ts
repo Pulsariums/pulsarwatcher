@@ -23,7 +23,7 @@ animeApiRouter.get("/quotes/random", async (c) => {
         }
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== NEKOS.BEST (Images) ==========
@@ -36,7 +36,7 @@ animeApiRouter.get("/images/:type", async (c) => {
         return res.json();
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== TRACE.MOE (Search by image) ==========
@@ -44,12 +44,12 @@ animeApiRouter.post("/trace", async (c) => {
     const body = await c.req.json();
     const { imageUrl } = body;
 
-    if (!imageUrl) return c.json({ provider: "Tatakai", status: 400, error: "Missing imageUrl" }, 400);
+    if (!imageUrl) return c.json({ provider: "PulsarWatch", status: 400, error: "Missing imageUrl" }, 400);
 
     const res = await fetch(`https://api.trace.moe/search?url=${encodeURIComponent(imageUrl)}`);
     const data = await res.json();
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== ANIME FACTS ==========
@@ -67,7 +67,7 @@ animeApiRouter.get("/facts/:anime", async (c) => {
         }
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== WAIFU.IM ==========
@@ -83,12 +83,12 @@ animeApiRouter.get("/waifu", async (c) => {
         return res.json();
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // Root for /anime-api
 animeApiRouter.get("/", (c) => {
-    return c.json({ provider: "Tatakai",
+    return c.json({ provider: "PulsarWatch",
         status: 200,
         message: "Anime Utility & Meta APIs Ported from anime-api",
         endpoints: {

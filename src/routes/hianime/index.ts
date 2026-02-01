@@ -8,7 +8,7 @@ const hianimeRouter = new Hono<ServerContext>();
 
 // /api/v1/hianime
 hianimeRouter.get("/", (c) => {
-    return c.json({ provider: "Tatakai",
+    return c.json({ provider: "PulsarWatch",
         status: 200,
         message: "HiAnime API endpoints",
         endpoints: {
@@ -40,7 +40,7 @@ hianimeRouter.get("/home", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/azlist/{sortOption}?page={page}
@@ -59,7 +59,7 @@ hianimeRouter.get("/azlist/:sortOption", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/qtip/{animeId}
@@ -73,7 +73,7 @@ hianimeRouter.get("/qtip/:animeId", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/category/{name}?page={page}
@@ -91,7 +91,7 @@ hianimeRouter.get("/category/:name", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/genre/{name}?page={page}
@@ -107,7 +107,7 @@ hianimeRouter.get("/genre/:name", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/producer/{name}?page={page}
@@ -123,7 +123,7 @@ hianimeRouter.get("/producer/:name", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/schedule?date={date}&tzOffset={tzOffset}
@@ -142,7 +142,7 @@ hianimeRouter.get("/schedule", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/search?q={query}&page={page}&filters={...filters}
@@ -159,7 +159,7 @@ hianimeRouter.get("/search", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/search/suggestion?q={query}
@@ -173,7 +173,7 @@ hianimeRouter.get("/search/suggestion", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/anime/{animeId}
@@ -187,7 +187,7 @@ hianimeRouter.get("/anime/:animeId", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/episode/servers?animeEpisodeId={id}
@@ -203,7 +203,7 @@ hianimeRouter.get("/episode/servers", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/episode/sources?animeEpisodeId={episodeId}&server={server}&category={category}
@@ -226,7 +226,7 @@ hianimeRouter.get("/episode/sources", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/anime/{anime-id}/episodes
@@ -240,7 +240,7 @@ hianimeRouter.get("/anime/:animeId/episodes", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 // /api/v1/hianime/anime/{anime-id}/next-episode-schedule
@@ -254,7 +254,7 @@ hianimeRouter.get("/anime/:animeId/next-episode-schedule", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, { status: 200 });
+    return c.json({ provider: "PulsarWatch", status: 200, data }, { status: 200 });
 });
 
 export { hianimeRouter };

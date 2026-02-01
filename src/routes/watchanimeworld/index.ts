@@ -212,14 +212,14 @@ watchawRouter.get("/home", async (c) => {
         }
         return { featured: featured.slice(0, 20) };
     }, cacheConfig.key, cacheConfig.duration);
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== SEARCH ==========
 watchawRouter.get("/search", async (c) => {
     const cacheConfig = c.get("CACHE_CONFIG");
     const query = c.req.query("q");
-    if (!query) return c.json({ provider: "Tatakai", status: 400, error: "Missing q parameter" }, 400);
+    if (!query) return c.json({ provider: "PulsarWatch", status: 400, error: "Missing q parameter" }, 400);
 
     const data = await cache.getOrSet(async () => {
         const response = await fetchWithRetry(`https://watchanimeworld.in/?s=${encodeURIComponent(query)}`, {
@@ -242,15 +242,15 @@ watchawRouter.get("/search", async (c) => {
         }
         return { results };
     }, cacheConfig.key, cacheConfig.duration);
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== PARSE SLUG ==========
 watchawRouter.get("/parse/:slug", (c) => {
     const slug = c.req.param("slug");
     const parsed = parseEpisodeUrl(slug);
-    if (!parsed) return c.json({ provider: "Tatakai", status: 400, error: "Invalid slug format" }, 400);
-    return c.json({ provider: "Tatakai", status: 200, data: parsed });
+    if (!parsed) return c.json({ provider: "PulsarWatch", status: 400, error: "Invalid slug format" }, 400);
+    return c.json({ provider: "PulsarWatch", status: 200, data: parsed });
 });
 
 // /api/v1/watchaw/episode?id={naruto-shippuden-1x1} OR ?episodeUrl={url}
@@ -262,7 +262,7 @@ watchawRouter.get("/episode", async (c) => {
     const identifier = id || episodeUrl;
 
     if (!identifier) {
-        return c.json({ provider: "Tatakai", status: 400, error: "Missing id or episodeUrl parameter" }, 400);
+        return c.json({ provider: "PulsarWatch", status: 400, error: "Missing id or episodeUrl parameter" }, 400);
     }
 
     const data = await cache.getOrSet(
@@ -270,12 +270,12 @@ watchawRouter.get("/episode", async (c) => {
         cacheConfig.key,
         cacheConfig.duration
     );
-    return c.json({ provider: "Tatakai", status: 200, data }, 200);
+    return c.json({ provider: "PulsarWatch", status: 200, data }, 200);
 });
 
 // ========== ROOT ==========
 watchawRouter.get("/", (c) => {
-    return c.json({ provider: "Tatakai",
+    return c.json({ provider: "PulsarWatch",
         status: 200,
         message: "WatchAnimeWorld Scraper - Multi-Language Dubbed Anime",
         endpoints: {

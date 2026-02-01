@@ -27,7 +27,7 @@ export const cacheConfigSetter = (basePrefixLength: number): MiddlewareHandler<S
         const path = c.req.path.slice(basePrefixLength);
         const queryString = c.req.url.split("?")[1] || "";
 
-        const cacheKey = `Tatakai:${path}${queryString ? `:${queryString}` : ""}`;
+        const cacheKey = `PulsarWatch:${path}${queryString ? `:${queryString}` : ""}`;
         const duration = getCacheDuration(path);
 
         c.set("CACHE_CONFIG", {

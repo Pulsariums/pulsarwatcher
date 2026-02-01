@@ -64,7 +64,7 @@ app.get(`${BASE_PATH}/docs/llm`, async (c) => {
     try {
         const docsDir = path.join(process.cwd(), "src", "docs");
         const files = ["intro.md", "hianime.md", "nineanime.md", "animeya.md", "sdk.md", "regional.md", "utility.md", "external.md"];
-        let fullContent = "Tatakai API — FULL DOCUMENTATION\n\n";
+        let fullContent = "PulsarWatch API — FULL DOCUMENTATION\n\n";
 
         fullContent += "NOTE: This document concatenates all documentation files. Each file is delimited with BEGIN/END markers to help LLM consumption.\n\n";
 
@@ -93,7 +93,7 @@ app.get("/docs-content/:section", async (c) => {
             // Generate LLM-friendly concatenated documentation
             const docsDir = path.join(process.cwd(), "src", "docs");
             const files = ["intro.md", "hianime.md", "nineanime.md", "anikai.md", "animeya.md", "sdk.md", "regional.md", "utility.md", "external.md"];
-            let fullContent = "Tatakai API — FULL DOCUMENTATION\n\n";
+            let fullContent = "PulsarWatch API — FULL DOCUMENTATION\n\n";
 
             fullContent += "NOTE: This document concatenates all documentation files. Each file is delimited with BEGIN/END markers to help LLM consumption.\n\n";
 
@@ -124,7 +124,7 @@ app.get("/info", (c) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Tatakai API | Endpoint Usage Guide</title>
+            <title>PulsarWatch API | Endpoint Usage Guide</title>
             <script src="https://cdn.tailwindcss.com"></script>
             <link rel="preconnect" href="https://fonts.googleapis.com">
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -154,7 +154,7 @@ app.get("/info", (c) => {
             <div class="max-w-6xl mx-auto">
                 <div class="flex justify-between items-center mb-8">
                     <div>
-                        <h1 class="text-4xl font-bold mb-2">Tatakai API Usage Guide</h1>
+                        <h1 class="text-4xl font-bold mb-2">PulsarWatch API Usage Guide</h1>
                         <p class="text-zinc-400">Detaylı endpoint kullanım örnekleri ve cevap formatları</p>
                     </div>
                     <div class="flex gap-3">
@@ -189,7 +189,7 @@ app.get("/info", (c) => {
                                     <p class="text-xs text-zinc-500 mb-1">Örnek Yanıt:</p>
                                     <div class="code-block">
                                         <pre>{
-  "provider": "Tatakai",
+  "provider": "PulsarWatch",
   "status": 200,
   "data": {
     "animes": [
@@ -409,7 +409,7 @@ app.get("/info", (c) => {
                 }
 
                 function downloadGuide() {
-                    const guide = \`# Tatakai API - Kullanım Rehberi
+                    const guide = \`# PulsarWatch API - Kullanım Rehberi
 
 ## HiAnime Endpoints
 
@@ -477,7 +477,7 @@ Generated: \${new Date().toISOString()}
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'tatakai-api-guide.md';
+                    a.download = 'pulsarwatch-api-guide.md';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
@@ -497,7 +497,7 @@ app.get("/docs/:section?", (c) => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Tatakai API | Developer Documentation</title>
+            <title>PulsarWatch API | Developer Documentation</title>
             <script src="https://cdn.tailwindcss.com"></script>
             <link rel="preconnect" href="https://fonts.googleapis.com">
             <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -585,7 +585,7 @@ app.get("/docs/:section?", (c) => {
                                 <div class="w-8 h-8 bg-gradient-to-tr from-brand-400 to-purple-500 rounded-lg flex items-center justify-center text-black font-bold transform transition-transform group-hover:rotate-6">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
                                 </div>
-                                <span class="font-bold text-lg tracking-tight">Tatakai<span class="text-zinc-600 font-normal ml-0.5 uppercase text-xs">API</span></span>
+                                <span class="font-bold text-lg tracking-tight">PulsarWatch<span class="text-zinc-600 font-normal ml-0.5 uppercase text-xs">API</span></span>
                             </a>
                             <button onclick="toggleMobileNav()" class="lg:hidden p-2 text-zinc-500 hover:text-white">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> <path d="M18 6 6 18M6 6l12 12" /> </svg>
@@ -664,7 +664,7 @@ LLM Context
                     <button onclick="toggleMobileNav()" class="p-2 text-zinc-400">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"> <line x1="3" y1="12" x2="21" y2="12" /> <line x1="3" y1="6" x2="21" y2="6" /> <line x1="3" y1="18" x2="21" y2="18" /> </svg>
                             </button>
-                            <span class="font-bold text-sm tracking-tight"> Tatakai Docs </span>
+                            <span class="font-bold text-sm tracking-tight"> PulsarWatch Docs </span>
                                 <div class="w-10"> </div>
                                     </header>
 
@@ -967,8 +967,8 @@ async function loadSection(section) {
 app.get("/", (c) =>
     c.json({
         status: 200,
-        provider: "Tatakai",
-        message: "🎌 Welcome to Tatakai API!",
+        provider: "PulsarWatch",
+        message: "🎌 Welcome to PulsarWatch API!",
         version: pkgJson.version,
         docs: "/docs",
         basePath: BASE_PATH,
@@ -1046,7 +1046,7 @@ app.onError(errorHandler);
         port: serverPort,
         fetch: app.fetch,
     }).addListener("listening", () => {
-        log.info(`🎌 Tatakai API running at http://localhost:${serverPort}`);
+        log.info(`🎌 PulsarWatch API running at http://localhost:${serverPort}`);
         log.info(`📚 API Base Path: ${BASE_PATH}`);
         log.info(`🔧 Environment: ${env.NODE_ENV}`);
         log.info(`💾 Cache TTL: ${env.CACHE_TTL_SECONDS}s`);

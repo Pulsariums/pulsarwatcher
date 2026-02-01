@@ -241,7 +241,7 @@ hindiDubbedRouter.get("/home", async (c) => {
         return { featured };
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // ========== CATEGORY ==========
@@ -269,7 +269,7 @@ hindiDubbedRouter.get("/category/:name", async (c) => {
         return { category: name, anime };
     }, cacheConfig.key, cacheConfig.duration);
 
-    return c.json({ provider: "Tatakai", status: 200, data });
+    return c.json({ provider: "PulsarWatch", status: 200, data });
 });
 
 // /api/v1/hindidubbed/search?title={title}
@@ -278,7 +278,7 @@ hindiDubbedRouter.get("/search", async (c) => {
     const title = c.req.query("title");
 
     if (!title) {
-        return c.json({ provider: "Tatakai", status: 400, error: "Missing title parameter" }, 400);
+        return c.json({ provider: "PulsarWatch", status: 400, error: "Missing title parameter" }, 400);
     }
 
     const data = await cache.getOrSet(
@@ -287,7 +287,7 @@ hindiDubbedRouter.get("/search", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, 200);
+    return c.json({ provider: "PulsarWatch", status: 200, data }, 200);
 });
 
 // /api/v1/hindidubbed/anime/{slug}
@@ -296,7 +296,7 @@ hindiDubbedRouter.get("/anime/:slug", async (c) => {
     const slug = c.req.param("slug");
 
     if (!slug) {
-        return c.json({ provider: "Tatakai", status: 400, error: "Missing slug parameter" }, 400);
+        return c.json({ provider: "PulsarWatch", status: 400, error: "Missing slug parameter" }, 400);
     }
 
     const data = await cache.getOrSet(
@@ -305,12 +305,12 @@ hindiDubbedRouter.get("/anime/:slug", async (c) => {
         cacheConfig.duration
     );
 
-    return c.json({ provider: "Tatakai", status: 200, data }, 200);
+    return c.json({ provider: "PulsarWatch", status: 200, data }, 200);
 });
 
 // ========== ROOT ==========
 hindiDubbedRouter.get("/", (c) => {
-    return c.json({ provider: "Tatakai",
+    return c.json({ provider: "PulsarWatch",
         status: 200,
         message: "AnimeHindiDubbed Scraper - Hindi Dubbed Anime",
         categories: ["hindi-anime-movies", "cartoon-shows", "love-romantic", "crunchiroll"],
