@@ -9,6 +9,7 @@ const BASE_URL = "https://9animetv.to";
 const DEFAULT_HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
   "X-Requested-With": "XMLHttpRequest",
+  Accept: "application/json, text/plain, */*",
 };
 
 async function fetchHtml(url: string, referer?: string) {
@@ -26,9 +27,15 @@ async function fetchJson(url: string, referer?: string) {
     headers: {
       ...DEFAULT_HEADERS,
       ...(referer ? { Referer: referer } : {}),
+      Origin: BASE_URL,
     },
   });
-  return response.json() as Promise<any>;
+  const text = await response.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { raw: text };
+  }
 }
 
 function parseEpisodeList(html: string) {
@@ -201,8 +208,9 @@ nineanimeRouter.get("/info/:id", async (c: Context) => {
       try {
         const listUrl = `${BASE_URL}/ajax/episode/list/${internalId}`;
         const listRes = await fetchJson(listUrl, infoUrl);
-        if (listRes?.html) {
-          episodes = parseEpisodeList(listRes.html);
+        const html = listRes?.html || listRes?.raw || "";
+        if (html) {
+          episodes = parseEpisodeList(html);
         }
       } catch {
         episodes = [];
@@ -252,8 +260,9 @@ nineanimeRouter.get("/episode/sources", async (c: Context) => {
     if (internalId && /^[0-9]+$/.test(episodeParam)) {
       const listUrl = `${BASE_URL}/ajax/episode/list/${internalId}`;
       const listRes = await fetchJson(listUrl, `${watchUrl}?ep=${episodeParam}`);
-      if (listRes?.html) {
-        const episodes = parseEpisodeList(listRes.html);
+      const html = listRes?.html || listRes?.raw || "";
+      if (html) {
+        const episodes = parseEpisodeList(html);
         const match = episodes.find((ep) => String(ep.number) === String(episodeParam));
         if (match?.id) {
           episodeId = match.id;
@@ -266,7 +275,7 @@ nineanimeRouter.get("/episode/sources", async (c: Context) => {
       `${watchUrl}?ep=${episodeId}`
     );
 
-    const serversHtml = serversRes?.html || "";
+    const serversHtml = serversRes?.html || serversRes?.raw || "";
     const $servers = cheerio.load(serversHtml);
     const firstServer = $servers(".server-item").first();
     const serverId = firstServer.attr("data-id") || "";
