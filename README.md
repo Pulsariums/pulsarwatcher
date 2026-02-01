@@ -89,40 +89,66 @@ Bu API, farklı anime sağlayıcılarını tek bir çatı altında birleştirir.
 
 Bu bölüm, geliştirme sırasında denenen sağlayıcıların neden çalıştığını veya neden çalışmadığını tek tek açıklar.
 
-### ✅ Çalışanlar (Nasıl Yaptık?)
+### ✅ Çalışanlar / Entegre Sağlayıcılar (Tek Tek)
 
-1. **NineAnime (9animetv.to)**
-	- **Yöntem**: HTML sayfalarından `flw-item` kartlarını `cheerio` ile parse ediyoruz.
-	- **Neden çalışıyor?** 9animetv.to arama sonuçları HTML içinde doğrudan geliyor (JS render zorunlu değil).
-	- **Not**: Bölüm kaynakları sayfası JS ile yüklendiği için `/episode/sources` sınırlı olabilir.
+**Ana sağlayıcılar**
+1. **HiAnime** (`/api/v1/hianime/*`)
+	- **Durum**: Çalışıyor (test edildi)
+	- **Nasıl**: Mevcut Tatakai router + aniwatch paketi
 
-2. **9AnimeTV (External Scrapers altında `/anime/9animetv/:query`)**
-	- **Yöntem**: `/search?keyword=...` HTML çıktısı parse edilerek listeleniyor.
-	- **Neden çalışıyor?** Arama sonuçları HTML içinde görünüyor, basit scraping yeterli.
+2. **NineAnime → 9animetv.to** (`/api/v1/nineanime/*`)
+	- **Durum**: Çalışıyor (test edildi)
+	- **Nasıl**: HTML sonuçları `flw-item` kartlarından `cheerio` ile parse
+	- **Not**: `/episode/sources` kısmi (JS ile yüklenen player)
 
-3. **HiAnime (mevcut Tatakai sağlayıcısı)**
-	- **Yöntem**: Orijinal Tatakai router’ı ile API/HTML parse.
-	- **Neden çalışıyor?** Stable endpoint/selector yapısı ve halihazırda çalışan entegrasyon.
+**Regional sağlayıcılar**
+3. **HindiDubbed** (`/api/v1/hindidubbed/*`, domain: animehindidubbed.in)
+4. **AnimeLok** (`/api/v1/animelok/*`, domain: animelok.to)
+5. **WatchAW** (`/api/v1/watchaw/*`)
+6. **DesiDubAnime** (`/api/v1/desidubanime/*`, domain: desidubanime.me)
+7. **Animeya** (`/api/v1/animeya/*`)
 
-### ⚠️ Yapamadıklarımız (Neden?)
+**External Scrapers (Klasik sağlayıcılar)**
+8. **9AnimeTV (external)** (`/api/v1/anime/9animetv/:query`, domain: 9animetv.to)
+	- **Durum**: Çalışıyor (test edildi)
+9. **GogoAnime** (`/api/v1/anime/gogoanime/:query`, domain: gogoanime3.co)
+10. **Chia-Anime** (`/api/v1/anime/chia-anime/:query`, domain: chia-anime.su)
+11. **Anime-Freak** (`/api/v1/anime/anime-freak/:query`, domain: animefreak.video)
+12. **Animeland** (`/api/v1/anime/animeland/:query`, domain: animeland.tv)
+
+**Meta / Utility**
+13. **Anime-API Utilities** (`/api/v1/anime-api/*`)
+	- Örnek: quotes, images, facts (ör. waifu.im)
+
+> Not: External/Regional sağlayıcılar, upstream site değişikliklerine bağlı olarak dalgalanabilir.
+
+### ⚠️ Denendi ama Olmadı / Eksik Kalanlar (Neden?)
 
 1. **9anime.to**
 	- **Sorun**: Arama sayfası gerçek sonuç yerine statik “landing” HTML döndürüyor.
 	- **Sonuç**: HTML’de liste yok, scraping yapılamadı.
 
 2. **Aniwave (aniwave.to)**
-	- **Sorun**: Zaman aşımı ve/veya farklı domain’e yönlendirme (erişim stabil değil).
+	- **Sorun**: Zaman aşımı + farklı domain’e yönlendirme (erişim stabil değil).
 	- **Sonuç**: Sürekli veri alınamadığı için entegrasyon güvenilir değil.
 
-3. **AnimePahe (animepahe.ru)**
-	- **Sorun**: DNS/erişim problemi (host çözülemiyor).
-	- **Sonuç**: Sunucuya erişim yok, entegrasyon mümkün değil.
+3. **AnimePahe (animepahe.ru/.com/.org)**
+	- **Sorun**: DNS çözümlenemiyor veya 301 yönlendirme/koruma.
+	- **Sonuç**: Stabil erişim yok, scraping mümkün değil.
 
-4. **AnimeHeaven**
-	- **Sorun**: Arama sonucu HTML içinde doğrudan listelenmiyor, JS üzerinden `fastsearch.php` ile geliyor.
-	- **Sonuç**: Basit HTML scraping yetersiz; ek endpoint çözümü gerekiyor.
+4. **AnimeUnity (animeunity.to/.tv/.org)**
+	- **Sorun**: 403/405 + agresif koruma/JS gerekli.
+	- **Sonuç**: Basit HTML fetch ile sonuç alınamadı.
 
-> İleride yapılacaklar: JS ile render edilen siteler için **headless** veya **doğrudan AJAX endpoint** çözümü eklenebilir.
+5. **Anikai (animwkai olarak istenen)**
+	- **Durum**: `anikai.to` erişilebilir ama bu repoda **router bağlı değil**.
+	- **Sonuç**: API endpoint yok, önce router eklenmesi gerekiyor.
+
+6. **AnimeHeaven**
+	- **Sorun**: Arama sonuçları HTML’de yok, JS ile `fastsearch.php` üzerinden geliyor.
+	- **Sonuç**: Basit scraping yetersiz; AJAX endpoint çözümü gerekiyor.
+
+> İleride yapılacaklar: JS render eden siteler için **headless** veya **doğrudan AJAX endpoint** entegrasyonu eklenebilir.
 
 ## Testing
 
