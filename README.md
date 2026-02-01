@@ -72,6 +72,19 @@ docker run -p 4000:4000 tatakai-api
 | `RATE_LIMIT_MAX_REQUESTS` | Max requests per window | `100` |
 | `CACHE_TTL_SECONDS` | Default cache TTL | `300` |
 
+## API Nasıl Çalışır? (Kısa İç Mimari)
+
+Bu API, farklı anime sağlayıcılarını tek bir çatı altında birleştirir. Her sağlayıcı `src/routes/` altında bağımsız bir router olarak bulunur ve `src/server.ts` içinde `BASE_PATH` (`/api/v1`) ile birleştirilir. Akış şu şekildedir:
+
+1. **İstek giriş noktası**: `src/server.ts` Hono uygulamasını başlatır ve router’ları bağlar.
+2. **Routing**: İstek URL’sine göre ilgili router devreye girer (ör. `/api/v1/hianime`, `/api/v1/nineanime`, `/api/v1/anime/*`).
+3. **Scraping/Fetch**: Router ilgili sağlayıcının HTML/API yanıtını çeker ve `cheerio` gibi parser’larla normalize eder.
+4. **Cache**: `src/config/cache.ts` üzerinden LRU/Redis önbelleği kullanılır. Aynı istekler daha hızlı döner.
+5. **Rate Limit & CORS**: `src/config/ratelimit.ts` ve `src/config/cors.ts` istek sınırlarını ve erişim izinlerini yönetir.
+6. **Hata Yönetimi**: Hatalar tek tip JSON formatında döndürülür.
+
+Özetle: `server.ts` yönlendirir → router veri toplar → normalize eder → cache/limit uygulanır → JSON yanıt döner.
+
 ## Testing
 
 Run the comprehensive test suite to validate all API endpoints:
