@@ -1,6 +1,6 @@
 import { Context } from "hono";
 import * as cheerio from "cheerio";
-import { fetchHtml, fetchAjax, BASE_URL, SITE_URL } from "./helpers.js";
+import { fetchHtml, fetchAjaxJson, BASE_URL, SITE_URL } from "./helpers.js";
 import { Episode } from "./types.js";
 
 export async function getAnimeInfo(c: Context) {
@@ -15,10 +15,22 @@ export async function getAnimeInfo(c: Context) {
     const description = $("div.film-description").text().trim();
     const poster = $("img.film-poster-img").attr("data-src") || $("img.film-poster-img").attr("src") || "";
     
-    // Get episodes count from breadcrumb or info
-    const episodesText = $("span.item:contains('Episodes')").text();
-    const episodesMatch = episodesText.match(/(\d+)/);
-    const episodes = episodesMatch ? parseInt(episodesMatch[1]) : 0;
+    // Get episodes count from internal ID + AJAX
+    const internalId = $("#wrapper[data-id]").attr("data-id");
+    let episodes = 0;
+    
+    if (internalId) {
+      try {
+        const ajaxUrl = `${BASE_URL}/ajax/episode/list/${internalId}`;
+        const ajaxData = await fetchAjaxJson(ajaxUrl, `${SITE_URL}/watch/${id}`);
+        if (ajaxData.status && ajaxData.html) {
+          const $ajax = cheerio.load(ajaxData.html);
+          episodes = $ajax(".ep-item").length;
+        }
+      } catch (e) {
+        // Silently fail, episodes will be 0
+      }
+    }
 
     const rating = parseFloat($("span.score").text()) || 0;
 
@@ -64,16 +76,23 @@ export async function getEpisodesList(c: Context) {
     }
 
     const ajaxUrl = `${BASE_URL}/ajax/episode/list/${internalId}`;
-    const episodeHtml = await fetchAjax(ajaxUrl, watchUrl);
-    const $episodes = cheerio.load(episodeHtml);
+    const ajaxData = await fetchAjaxJson(ajaxUrl, watchUrl);
+    
+    if (!ajaxData.status || !ajaxData.html) {
+      return c.json(
+        { success: false, error: "Failed to fetch episode list" },
+        500
+      );
+    }
+
+    const $episodes = cheerio.load(ajaxData.html);
 
     const episodes: Episode[] = [];
     $episodes(".ep-item").each((_, elem) => {
       const $elem = $episodes(elem);
       const episodeNum = $elem.attr("data-number");
       const episodeId = $elem.attr("data-id");
-      const title =
-        $elem.find(".name")?.text()?.trim() || `Episode ${episodeNum}`;
+      const title = $elem.attr("title") || `Episode ${episodeNum}`;
 
       if (episodeNum && episodeId) {
         episodes.push({

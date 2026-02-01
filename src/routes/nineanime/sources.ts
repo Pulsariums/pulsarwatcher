@@ -21,8 +21,9 @@ export async function getEpisodeLink(c: Context) {
     }
 
     const ajaxListUrl = `${BASE_URL}/ajax/episode/list/${internalId}`;
-    const episodeListHtml = await fetchAjax(ajaxListUrl, watchUrl);
-    const $episodes = cheerio.load(episodeListHtml);
+    const episodeListData = await fetchAjaxJson(ajaxListUrl, watchUrl);
+    if (!episodeListData.status || !episodeListData.html) throw new Error("Failed to fetch episode list");
+    const $episodes = cheerio.load(episodeListData.html);
 
     let episodeId: string | undefined;
     $episodes(".ep-item").each((_, elem) => {
@@ -41,8 +42,9 @@ export async function getEpisodeLink(c: Context) {
     }
 
     const serversUrl = `${BASE_URL}/ajax/episode/servers?episodeId=${episodeId}`;
-    const serversHtml = await fetchAjax(serversUrl, watchUrl);
-    const $servers = cheerio.load(serversHtml);
+    const serversData = await fetchAjaxJson(serversUrl, watchUrl);
+    if (!serversData.status || !serversData.html) throw new Error("Failed to fetch servers");
+    const $servers = cheerio.load(serversData.html);
 
     const firstServer = $servers(".server-item").first();
     const serverId = firstServer.attr("data-id");
@@ -107,8 +109,9 @@ export async function getEpisodeSources(c: Context) {
     }
 
     const ajaxListUrl = `${BASE_URL}/ajax/episode/list/${internalId}`;
-    const episodeListHtml = await fetchAjax(ajaxListUrl, watchUrl);
-    const $episodes = cheerio.load(episodeListHtml);
+    const episodeListData = await fetchAjaxJson(ajaxListUrl, watchUrl);
+    if (!episodeListData.status || !episodeListData.html) throw new Error("Failed to fetch episode list");
+    const $episodes = cheerio.load(episodeListData.html);
 
     let episodeId: string | undefined;
     $episodes(".ep-item").each((_, elem) => {
@@ -127,8 +130,9 @@ export async function getEpisodeSources(c: Context) {
     }
 
     const serversUrl = `${BASE_URL}/ajax/episode/servers?episodeId=${episodeId}`;
-    const serversHtml = await fetchAjax(serversUrl, watchUrl);
-    const $servers = cheerio.load(serversHtml);
+    const serversData = await fetchAjaxJson(serversUrl, watchUrl);
+    if (!serversData.status || !serversData.html) throw new Error("Failed to fetch servers");
+    const $servers = cheerio.load(serversData.html);
 
     const firstServer = $servers(".server-item").first();
     const serverId = firstServer.attr("data-id");
