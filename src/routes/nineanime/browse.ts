@@ -41,7 +41,10 @@ export async function getTrending(c: Context) {
   try {
     const page = c.req.query("page") || "1";
 
-    const html = await fetchHtml(`${SITE_URL}/trending?page=${page}`);
+    // NineAnime trending sayfası JavaScript ile yüklendiği için
+    // filter endpoint'ini kullanıyoruz (sort=trending)
+    const url = `${SITE_URL}/filter?sort=trending&page=${page}`;
+    const html = await fetchHtml(url);
     const $ = cheerio.load(html);
 
     const animes = parseAnimeCards($);
@@ -66,7 +69,10 @@ export async function getLatest(c: Context) {
   try {
     const page = c.req.query("page") || "1";
 
-    const html = await fetchHtml(`${SITE_URL}/latest?page=${page}`);
+    // NineAnime latest sayfası JavaScript ile yüklendiği için
+    // filter endpoint'ini kullanıyoruz (sort=recently_updated)
+    const url = `${SITE_URL}/filter?sort=recently_updated&page=${page}`;
+    const html = await fetchHtml(url);
     const $ = cheerio.load(html);
 
     const animes = parseAnimeCards($);

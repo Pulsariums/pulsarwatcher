@@ -6,7 +6,7 @@ import { log } from "../../config/logger.js";
 
 const gogoanimeRouter = new Hono<ServerContext>();
 
-const BASE_URL = "https://gogoanime3.co";
+const BASE_URL = "https://anitaku.pe";
 const AJAX_URL = "https://ajax.gogocdn.net/ajax";
 const USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 

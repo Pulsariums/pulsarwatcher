@@ -340,9 +340,9 @@ app.get("/info", (c) => {
                             <div>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
-                                    <code class="text-zinc-500">/api/v1/nineanime/trending?page=1</code>
+                                    <code class="text-brand">/api/v1/nineanime/trending?page=1</code>
                                 </div>
-                                <p class="text-sm text-zinc-400 mb-3">⚠️ Trend olan animeler (şu an çalışmıyor - site değişikliği)</p>
+                                <p class="text-sm text-zinc-400 mb-3">✅ Trend olan animeler (filter endpoint ile çalışıyor)</p>
                                 <div class="code-block group">
                                     <button class="copy-btn" onclick="copyToClipboard(this, 'nineanime-trending-curl')">Copy</button>
                                     <pre id="nineanime-trending-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/trending?page=1"</pre>
@@ -353,9 +353,9 @@ app.get("/info", (c) => {
                             <div>
                                 <div class="flex items-center mb-2">
                                     <span class="method-badge method-get">GET</span>
-                                    <code class="text-zinc-500">/api/v1/nineanime/latest?page=1</code>
+                                    <code class="text-brand">/api/v1/nineanime/latest?page=1</code>
                                 </div>
-                                <p class="text-sm text-zinc-400 mb-3">⚠️ En yeni bölümler (şu an çalışmıyor - site değişikliği)</p>
+                                <p class="text-sm text-zinc-400 mb-3">✅ En yeni bölümler (filter endpoint ile çalışıyor)</p>
                                 <div class="code-block group">
                                     <button class="copy-btn" onclick="copyToClipboard(this, 'nineanime-latest-curl')">Copy</button>
                                     <pre id="nineanime-latest-curl">curl "https://pulsarwatcher.vercel.app/api/v1/nineanime/latest?page=1"</pre>
