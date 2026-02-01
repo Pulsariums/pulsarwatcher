@@ -22,12 +22,25 @@ async function fetchHtml(url: string, referer?: string) {
   return response.text();
 }
 
-async function fetchJson(url: string, referer?: string) {
+async function fetchHtmlWithCookie(url: string, referer?: string) {
+  const response = await fetch(url, {
+    headers: {
+      ...DEFAULT_HEADERS,
+      ...(referer ? { Referer: referer } : {}),
+    },
+  });
+  const html = await response.text();
+  const cookie = response.headers.get("set-cookie") || "";
+  return { html, cookie };
+}
+
+async function fetchJson(url: string, referer?: string, cookie?: string) {
   const response = await fetch(url, {
     headers: {
       ...DEFAULT_HEADERS,
       ...(referer ? { Referer: referer } : {}),
       Origin: BASE_URL,
+      ...(cookie ? { Cookie: cookie } : {}),
     },
   });
   const text = await response.text();
@@ -252,14 +265,18 @@ nineanimeRouter.get("/episode/sources", async (c: Context) => {
       );
     }
     const watchUrl = `${BASE_URL}/watch/${id}`;
-    const watchHtml = await fetchHtml(watchUrl);
-    const $watch = cheerio.load(watchHtml);
+    const watchRes = await fetchHtmlWithCookie(watchUrl);
+    const $watch = cheerio.load(watchRes.html);
     const internalId = $watch("#wrapper").attr("data-id") || "";
 
     let episodeId = episodeParam;
     if (internalId && /^[0-9]+$/.test(episodeParam)) {
       const listUrl = `${BASE_URL}/ajax/episode/list/${internalId}`;
-      const listRes = await fetchJson(listUrl, `${watchUrl}?ep=${episodeParam}`);
+      const listRes = await fetchJson(
+        listUrl,
+        `${watchUrl}?ep=${episodeParam}`,
+        watchRes.cookie
+      );
       const html = listRes?.html || listRes?.raw || "";
       if (html) {
         const episodes = parseEpisodeList(html);
@@ -272,7 +289,8 @@ nineanimeRouter.get("/episode/sources", async (c: Context) => {
 
     const serversRes = await fetchJson(
       `${BASE_URL}/ajax/episode/servers?episodeId=${episodeId}`,
-      `${watchUrl}?ep=${episodeId}`
+      `${watchUrl}?ep=${episodeId}`,
+      watchRes.cookie
     );
 
     const serversHtml = serversRes?.html || serversRes?.raw || "";
@@ -292,7 +310,8 @@ nineanimeRouter.get("/episode/sources", async (c: Context) => {
 
     const sourceRes = await fetchJson(
       `${BASE_URL}/ajax/episode/sources?id=${serverId}`,
-      `${watchUrl}?ep=${episodeId}`
+      `${watchUrl}?ep=${episodeId}`,
+      watchRes.cookie
     );
 
     if (!sourceRes?.link) {
