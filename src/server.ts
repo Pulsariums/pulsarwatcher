@@ -16,6 +16,16 @@ import type { ServerContext } from "./config/context.js";
 import { logging } from "./middleware/logging.js";
 import { cacheConfigSetter, cacheControlHeaders } from "./middleware/cache.js";
 
+// Import core system
+import { scraperRegistry } from "./core/ScraperRegistry.js";
+import { managementRouter } from "./routes/management.js";
+
+// Import route registries (auto-register scrapers)
+import "./routes/hianime/registry.js";
+import "./routes/nineanime/registry.js";
+import "./routes/animeunity/registry.js";
+import "./routes/animeya/registry.js";
+
 // Import routes
 import { hianimeRouter } from "./routes/hianime/index.js";
 import { hindiDubbedRouter } from "./routes/animehindidubbed/index.js";
@@ -1018,28 +1028,19 @@ app.get("/", (c) =>
         message: "🎌 Welcome to PulsarWatch API!",
         version: pkgJson.version,
         docs: "/docs",
+        info: "/info",
+        management: `${BASE_PATH}/manage`,
         basePath: BASE_PATH,
-        endpoints: {
-            hianime: { status: "✅ Active", path: `${BASE_PATH}/hianime` },
-            nineanime: { status: "✅ Active", path: `${BASE_PATH}/nineanime` },
-            animeunity: { status: "✅ Active", path: `${BASE_PATH}/animeunity` },
-            animeya: { status: "✅ Active", path: `${BASE_PATH}/animeya` },
-            watchaw: { status: "✅ Active", path: `${BASE_PATH}/watchaw` },
-            hindidubbed: { status: "✅ Active", path: `${BASE_PATH}/hindidubbed` },
-            consumet: { status: "✅ Active", path: `${BASE_PATH}/consumet` },
-            animeScrapers: { status: "✅ Active", path: `${BASE_PATH}/anime` },
-            meta: { status: "✅ Active", path: `${BASE_PATH}/anime-api` },
-            regionalUnderMaintenance: {
-                animelok: `${BASE_PATH}/animelok`,
-                desidubanime: `${BASE_PATH}/desidubanime`,
-            }
-        },
+        endpoints: scraperRegistry.listEndpoints(),
+        stats: scraperRegistry.getStats(),
         quickstart: {
             hianimeSearch: `${BASE_PATH}/hianime/search?q=naruto`,
             nineanimeSearch: `${BASE_PATH}/nineanime/search?q=naruto`,
-            nineanimeTrending: `${BASE_PATH}/nineanime/trending?page=1`,
-            animeScraperSearch: `${BASE_PATH}/anime/9animetv/naruto`,
-            docs: "/docs"
+            animeunitySearch: `${BASE_PATH}/animeunity/search?q=naruto`,
+            scrapersList: `${BASE_PATH}/manage/scrapers`,
+            systemHealth: `${BASE_PATH}/manage/health`,
+            docs: "/docs",
+            info: "/info"
         },
         examples: [
             {
@@ -1066,6 +1067,9 @@ app.get("/", (c) =>
 
 // ========== CACHE CONFIG MIDDLEWARE ==========
 app.use(cacheConfigSetter(BASE_PATH.length));
+
+// ========== MANAGEMENT ROUTES ==========
+app.route(`${BASE_PATH}/manage`, managementRouter);
 
 // ========== API ROUTES ==========
 app.route(`${BASE_PATH}/hianime`, hianimeRouter);

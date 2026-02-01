@@ -1,10 +1,11 @@
 # PulsarWatch API 🎌
 
-> Unified Anime API combining HiAnime, NineAnime, and regional scrapers with modern caching, CORS, rate limiting, and logging.
+> Unified Anime API combining HiAnime, NineAnime, AnimeUnity and regional scrapers with modern caching, CORS, rate limiting, and modular architecture.
 
-## Features
+## ✨ Key Features
 
 - 🚀 **Modern Stack**: Built with [Hono](https://hono.dev/) - ultra-fast, lightweight web framework
+- 🎯 **Modular Architecture**: Each scraper is independently manageable with registry system
 - 💾 **Hybrid Caching**: Redis with LRU in-memory fallback
 - 🔒 **Rate Limiting**: Configurable per-IP rate limiting
 - 📝 **Structured Logging**: Pino logger with pretty dev output
@@ -12,18 +13,39 @@
 - 🐳 **Docker Ready**: Multi-stage Dockerfile included
 - 📦 **TypeScript**: Full type safety
 - 🧪 **Comprehensive Testing**: Built-in endpoint validation scripts
+- 🎛️ **Centralized Management**: Scraper registry and health monitoring
 
-## API Endpoints
+### Management & System
 
 | Route | Description |
 |-------|-------------|
-| `/api/v1/hianime/*` | HiAnime scraper - search, info, episodes, sources |
-| `/api/v1/anime/*` | External anime search providers (GogoAnime, Chia-Anime, etc.) |
-| `/api/v1/anime-api/*` | Anime utility APIs (quotes, images, facts, waifu) |
-| `/api/v1/animehindidubbed/*` | Hindi dubbed anime scraper |
-| `/api/v1/animelok/*` | AnimeLok multi-language streaming |
-| `/api/v1/animeya/*` | Animeya streaming platform |
-| `/api/v1/watchaw/*` | WatchAnimeWorld multi-language streaming |
+| `/api/v1/manage/scrapers` | List all registered scrapers with metadata |
+| `/api/v1/manage/scrapers/active` | Get only active scrapers |
+| `/api/v1/manage/scrapers/:id` | Get specific scraper details |
+| `/api/v1/manage/health` | System health check for all scrapers |
+| `/api/v1/manage/stats` | System statistics and scraper status |
+
+### Scraper Endpoints
+
+| Route | Description | Status |
+|-------|-------------|--------|
+| `/api/v1/hianime/*` | HiAnime scraper - search, info, episodes, sources | ✅ Active |
+| `/api/v1/nineanime/*` | NineAnime scraper - search, info, sources | ✅ Active |
+| `/api/v1/animeunity/*` | AnimeUnity scraper - Italian platform | ✅ Active |
+| `/api/v1/animeya/*` | Animeya streaming platform | ✅ Active |
+| `/api/v1/hindidubbed/*` | Hindi dubbed anime scraper | ✅ Active |
+| `/api/v1/watchaw/*` | WatchAnimeWorld streaming | ✅ Active |
+| `/api/v1/anime/*` | External providers (GogoAnime, etc.) | ✅ Active |
+| `/api/v1/anime-api/*` | Utility APIs (quotes, images, waifu) | ✅ Active |
+
+### Utility Endpoints
+
+| Route | Description |
+|-------|-------------|
+| `/health` | Basic health check |
+| `/version` | API version info |
+| `/docs` | Interactive documentation |
+| `/info` | Detailed usage guide with examplesimeWorld multi-language streaming |
 | `/health` | Health check |
 | `/version` | API version info |
 
@@ -52,7 +74,54 @@ npm run dev
 ### Docker
 
 ```bash
-# Build and run with Docker Compose
+# B🏗️ Architecture
+
+### Modular Scraper System
+
+Each scraper is organized as an independent module:
+
+```
+src/routes/{scraper}/
+├── index.ts       # Main router logic
+├── config.ts      # Configuration constants
+├── fetcher.ts     # HTTP request handlers
+├── parser.ts      # HTML/JSON parsing logic
+├── types.ts       # TypeScript types
+├── utils.ts       # Helper functions
+└── registry.ts    # Auto-registration with ScraperRegistry
+```
+
+### Core System
+
+```
+src/core/
+├── ScraperRegistry.ts  # Centralized scraper management
+├── types.ts            # Shared TypeScript interfaces
+└── utils.ts            # Common utility functions
+```
+
+All scrapers auto-register on import, providing:
+- Metadata (name, version, status, features)
+- Endpoint mapping
+- Health monitoring
+- Centralized management API
+
+## 🎛️ Scraper Management
+
+Check all registered scrapers:
+```bash
+curl http://localhost:4000/api/v1/manage/scrapers
+```
+
+System health check:
+```bash
+curl http://localhost:4000/api/v1/manage/health
+```
+
+Get specific scraper info:
+```bash
+curl http://localhost:4000/api/v1/manage/scrapers/hianime
+```
 docker-compose up -d
 
 # Or build image only
