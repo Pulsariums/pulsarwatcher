@@ -5,7 +5,7 @@ import type { ServerContext } from "../config/context.js";
 const managementRouter = new Hono<ServerContext>();
 
 // Get all scrapers info
-managementRouter.get("/scrapers", (c) => {
+managementRouter.get("/scrapers", (c: any) => {
     const scrapers = scraperRegistry.getAll();
     return c.json({
         provider: "PulsarWatch",
@@ -27,7 +27,7 @@ managementRouter.get("/scrapers", (c) => {
 });
 
 // Get active scrapers only
-managementRouter.get("/scrapers/active", (c) => {
+managementRouter.get("/scrapers/active", (c: any) => {
     const active = scraperRegistry.getActive();
     return c.json({
         provider: "PulsarWatch",
@@ -42,7 +42,7 @@ managementRouter.get("/scrapers/active", (c) => {
 });
 
 // Get specific scraper info
-managementRouter.get("/scrapers/:id", (c) => {
+managementRouter.get("/scrapers/:id", (c: any) => {
     const id = c.req.param("id");
     const scraper = scraperRegistry.get(id);
 
@@ -71,7 +71,7 @@ managementRouter.get("/scrapers/:id", (c) => {
 });
 
 // Get system stats
-managementRouter.get("/stats", (c) => {
+managementRouter.get("/stats", (c: any) => {
     const stats = scraperRegistry.getStats();
     return c.json({
         provider: "PulsarWatch",
@@ -89,7 +89,7 @@ managementRouter.get("/stats", (c) => {
 });
 
 // Health check for all scrapers
-managementRouter.get("/health", (c) => {
+managementRouter.get("/health", (c: any) => {
     const scrapers = scraperRegistry.getAll();
     const health = scrapers.map(s => ({
         id: s.id,

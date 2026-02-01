@@ -2,8 +2,9 @@ import { Hono } from "hono";
 import { searchAnime, getTrending, getLatest } from "./browse.js";
 import { getAnimeInfo, getEpisodesList } from "./info.js";
 import { getEpisodeLink, getEpisodeSources } from "./sources.js";
+import type { ServerContext } from "../../config/context.js";
 
-const nineanimeRouter = new Hono();
+const nineanimeRouter = new Hono<ServerContext>();
 
 // Root endpoint - API documentation
 nineanimeRouter.get("/", (c: any) => {
