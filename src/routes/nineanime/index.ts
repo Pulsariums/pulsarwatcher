@@ -6,6 +6,49 @@ const nineanimeRouter = new Hono();
 
 const BASE_URL = "https://9animetv.to";
 
+const DEFAULT_HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+  "X-Requested-With": "XMLHttpRequest",
+};
+
+async function fetchHtml(url: string, referer?: string) {
+  const response = await fetch(url, {
+    headers: {
+      ...DEFAULT_HEADERS,
+      ...(referer ? { Referer: referer } : {}),
+    },
+  });
+  return response.text();
+}
+
+async function fetchJson(url: string, referer?: string) {
+  const response = await fetch(url, {
+    headers: {
+      ...DEFAULT_HEADERS,
+      ...(referer ? { Referer: referer } : {}),
+    },
+  });
+  return response.json() as Promise<any>;
+}
+
+function parseEpisodeList(html: string) {
+  const $ = cheerio.load(html);
+  const episodes: any[] = [];
+  $("a.ep-item").each((_index, element) => {
+    const epId = $(element).attr("data-id") || "";
+    const number = $(element).attr("data-number") || $(element).find(".order").text().trim();
+    const href = $(element).attr("href") || "";
+    if (epId) {
+      episodes.push({
+        id: epId,
+        number,
+        url: href.startsWith("http") ? href : `${BASE_URL}${href}`,
+      });
+    }
+  });
+  return episodes;
+}
+
 // Search endpoint
 nineanimeRouter.get("/search", async (c: Context) => {
   try {
@@ -17,13 +60,7 @@ nineanimeRouter.get("/search", async (c: Context) => {
     }
 
     const searchUrl = `${BASE_URL}/filter?keyword=${encodeURIComponent(query)}&page=${page}`;
-    const response = await fetch(searchUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      },
-    });
-
-    const html = await response.text();
+    const html = await fetchHtml(searchUrl);
     const $ = cheerio.load(html);
 
     const results: any[] = [];
@@ -74,13 +111,7 @@ nineanimeRouter.get("/trending", async (c: Context) => {
     const page = c.req.query("page") || "1";
     const trendingUrl = `${BASE_URL}/filter?sort=trending&page=${page}`;
 
-    const response = await fetch(trendingUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      },
-    });
-
-    const html = await response.text();
+    const html = await fetchHtml(trendingUrl);
     const $ = cheerio.load(html);
 
     const results: any[] = [];
@@ -111,13 +142,7 @@ nineanimeRouter.get("/latest", async (c: Context) => {
     const page = c.req.query("page") || "1";
     const latestUrl = `${BASE_URL}/filter?sort=recently_updated&page=${page}`;
 
-    const response = await fetch(latestUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      },
-    });
-
-    const html = await response.text();
+    const html = await fetchHtml(latestUrl);
     const $ = cheerio.load(html);
 
     const results: any[] = [];
@@ -145,13 +170,7 @@ nineanimeRouter.get("/info/:id", async (c: Context) => {
     const id = c.req.param("id");
     const infoUrl = `${BASE_URL}/watch/${id}`;
 
-    const response = await fetch(infoUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      },
-    });
-
-    const html = await response.text();
+    const html = await fetchHtml(infoUrl);
     const $ = cheerio.load(html);
 
       const title = $("h2.film-name").text().trim() || $("h1.film-name").text().trim();
@@ -177,20 +196,18 @@ nineanimeRouter.get("/info/:id", async (c: Context) => {
 
       const internalId = $("#wrapper").attr("data-id") || "";
 
-    const episodes: any[] = [];
-    $("div.episodes-ul li a").each((_index, element) => {
-      const $ep = $(element);
-      const epId = $ep.attr("href")?.split("/").pop() || "";
-      const epNumber = $ep.text().trim();
-
-      if (epId) {
-        episodes.push({
-          id: epId,
-          number: epNumber,
-          url: `${BASE_URL}/watch/${id}/${epId}`,
-        });
+    let episodes: any[] = [];
+    if (internalId) {
+      try {
+        const listUrl = `${BASE_URL}/ajax/episode/list/${internalId}`;
+        const listRes = await fetchJson(listUrl, infoUrl);
+        if (listRes?.html) {
+          episodes = parseEpisodeList(listRes.html);
+        }
+      } catch {
+        episodes = [];
       }
-    });
+    }
 
       return c.json({
         success: true,
@@ -215,9 +232,9 @@ nineanimeRouter.get("/info/:id", async (c: Context) => {
 nineanimeRouter.get("/episode/sources", async (c: Context) => {
   try {
     const id = c.req.query("id");
-    const episodeId = c.req.query("ep");
+    const episodeParam = c.req.query("ep");
 
-    if (!id || !episodeId) {
+    if (!id || !episodeParam) {
       return c.json(
         {
           success: false,
@@ -226,28 +243,54 @@ nineanimeRouter.get("/episode/sources", async (c: Context) => {
         400
       );
     }
+    const watchUrl = `${BASE_URL}/watch/${id}`;
+    const watchHtml = await fetchHtml(watchUrl);
+    const $watch = cheerio.load(watchHtml);
+    const internalId = $watch("#wrapper").attr("data-id") || "";
 
-    const episodeUrl = `${BASE_URL}/watch/${id}/${episodeId}`;
+    let episodeId = episodeParam;
+    if (internalId && /^[0-9]+$/.test(episodeParam)) {
+      const listUrl = `${BASE_URL}/ajax/episode/list/${internalId}`;
+      const listRes = await fetchJson(listUrl, `${watchUrl}?ep=${episodeParam}`);
+      if (listRes?.html) {
+        const episodes = parseEpisodeList(listRes.html);
+        const match = episodes.find((ep) => String(ep.number) === String(episodeParam));
+        if (match?.id) {
+          episodeId = match.id;
+        }
+      }
+    }
 
-    const response = await fetch(episodeUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-      },
-    });
+    const serversRes = await fetchJson(
+      `${BASE_URL}/ajax/episode/servers?episodeId=${episodeId}`,
+      `${watchUrl}?ep=${episodeId}`
+    );
 
-    const html = await response.text();
-    const $ = cheerio.load(html);
+    const serversHtml = serversRes?.html || "";
+    const $servers = cheerio.load(serversHtml);
+    const firstServer = $servers(".server-item").first();
+    const serverId = firstServer.attr("data-id") || "";
 
-    const iframeSrc =
-      $("iframe.video-container").attr("src") ||
-      $('iframe[src*="nineanime"]').attr("src") ||
-      "";
-
-    if (!iframeSrc) {
+    if (!serverId) {
       return c.json(
         {
           success: false,
-          error: "No video source found",
+          error: "No video server found",
+        },
+        404
+      );
+    }
+
+    const sourceRes = await fetchJson(
+      `${BASE_URL}/ajax/episode/sources?id=${serverId}`,
+      `${watchUrl}?ep=${episodeId}`
+    );
+
+    if (!sourceRes?.link) {
+      return c.json(
+        {
+          success: false,
+          error: "No video source link found",
         },
         404
       );
@@ -255,9 +298,10 @@ nineanimeRouter.get("/episode/sources", async (c: Context) => {
 
     const sources = [
       {
-        url: iframeSrc.startsWith("http") ? iframeSrc : `https:${iframeSrc}`,
+        url: sourceRes.link,
         quality: "default",
-        isM3U8: iframeSrc.includes(".m3u8"),
+        isM3U8: sourceRes.link.includes(".m3u8"),
+        type: sourceRes.type || "iframe",
       },
     ];
 
