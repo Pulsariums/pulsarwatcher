@@ -4,15 +4,22 @@ import { AnimeCard } from "./types.js";
 export function parseAnimeCards($: cheerio.CheerioAPI): AnimeCard[] {
   const cards: AnimeCard[] = [];
 
-  $(".anime-card, .film-poster").each((_, elem) => {
+  $(".flw-item").each((_, elem) => {
     const $card = $(elem);
 
-    // ID - from link
-    const link = $card.find("a").attr("href") || "";
+    // Link from poster or title
+    const link = 
+      $card.find(".film-poster a").attr("href") ||
+      $card.find(".film-name a").attr("href") ||
+      "";
+    
     const id = link.split("/watch/")[1]?.split("?")[0] || "";
 
     // Title
-    const title = $card.find(".film-name, .anime-name").text().trim();
+    const title =
+      $card.find(".film-name a").attr("title") ||
+      $card.find(".film-name a").text().trim() ||
+      $card.find("h3.film-name a").text().trim();
 
     // Poster
     const poster =
@@ -21,7 +28,7 @@ export function parseAnimeCards($: cheerio.CheerioAPI): AnimeCard[] {
       "";
 
     // Type
-    const type = $card.find(".fdi-item:first").text().trim();
+    const type = $card.find(".fdi-item").first().text().trim();
 
     if (id && title) {
       cards.push({
