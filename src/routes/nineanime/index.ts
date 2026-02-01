@@ -267,7 +267,7 @@ nineanimeRouter.get("/episode/sources", async (c) => {
     // Video player'ı bul
     const iframeSrc =
       $("iframe.video-container").attr("src") ||
-      $("iframe[src*="nineanime"]").attr("src") ||
+      $("iframe[src*=\"nineanime\"]").attr("src") ||
       "";
 
     if (!iframeSrc) {
