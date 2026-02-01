@@ -254,12 +254,15 @@ hianimeRouter.get("/episode/sources-with-quality", async (c) => {
                 sources.sources.map(async (source) => {
                     if (source.isM3U8 && source.url.includes('master.m3u8')) {
                         try {
-                            const qualities = await parseM3U8Playlist(source.url);
+                            // Use referer from headers if available
+                            const referer = sources.headers?.Referer;
+                            const qualities = await parseM3U8Playlist(source.url, referer);
                             return {
                                 ...source,
                                 qualities: qualities.length > 0 ? qualities : undefined,
                             };
                         } catch (error) {
+                            console.error('M3U8 parsing failed:', error);
                             return source;
                         }
                     }

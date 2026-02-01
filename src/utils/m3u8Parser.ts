@@ -13,9 +13,17 @@ export interface M3U8Quality {
 /**
  * Parse M3U8 master playlist and extract quality variants
  */
-export async function parseM3U8Playlist(m3u8Url: string): Promise<M3U8Quality[]> {
+export async function parseM3U8Playlist(m3u8Url: string, referer?: string): Promise<M3U8Quality[]> {
     try {
-        const response = await fetch(m3u8Url);
+        const headers: HeadersInit = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        };
+
+        if (referer) {
+            headers['Referer'] = referer;
+        }
+
+        const response = await fetch(m3u8Url, { headers });
         if (!response.ok) {
             throw new Error(`Failed to fetch M3U8: ${response.status}`);
         }
