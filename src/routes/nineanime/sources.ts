@@ -1,6 +1,6 @@
 import { Context } from "hono";
 import * as cheerio from "cheerio";
-import { fetchHtml, fetchAjax, fetchAjaxJson, BASE_URL, SITE_URL } from "./helpers";
+import { fetchHtml, fetchAjax, fetchAjaxJson, BASE_URL, SITE_URL } from "./helpers.js";
 
 export async function getEpisodeLink(c: Context) {
   try {

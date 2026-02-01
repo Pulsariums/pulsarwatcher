@@ -1,12 +1,12 @@
-import { Router } from "hono";
-import { searchAnime, getTrending, getLatest } from "./browse";
-import { getAnimeInfo, getEpisodesList } from "./info";
-import { getEpisodeLink, getEpisodeSources } from "./sources";
+import { Hono } from "hono";
+import { searchAnime, getTrending, getLatest } from "./browse.js";
+import { getAnimeInfo, getEpisodesList } from "./info.js";
+import { getEpisodeLink, getEpisodeSources } from "./sources.js";
 
-const nineanimeRouter = new Router();
+const nineanimeRouter = new Hono();
 
 // Root endpoint - API documentation
-nineanimeRouter.get("/", (c) => {
+nineanimeRouter.get("/", (c: any) => {
   return c.json({
     provider: "NineAnime",
     status: 200,

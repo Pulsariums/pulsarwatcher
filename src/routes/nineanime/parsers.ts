@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { AnimeCard } from "./types";
+import { AnimeCard } from "./types.js";
 
 export function parseAnimeCards($: cheerio.CheerioAPI): AnimeCard[] {
   const cards: AnimeCard[] = [];

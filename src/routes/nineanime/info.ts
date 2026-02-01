@@ -1,7 +1,7 @@
 import { Context } from "hono";
 import * as cheerio from "cheerio";
-import { fetchHtml, fetchAjax, BASE_URL, SITE_URL } from "./helpers";
-import { Episode } from "./types";
+import { fetchHtml, fetchAjax, BASE_URL, SITE_URL } from "./helpers.js";
+import { Episode } from "./types.js";
 
 export async function getAnimeInfo(c: Context) {
   try {

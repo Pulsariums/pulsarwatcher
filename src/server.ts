@@ -25,7 +25,7 @@ import { animeRouter } from "./routes/anime/index.js";
 import { animeApiRouter } from "./routes/anime-api/index.js";
 import { animelokRouter } from "./routes/animelok/index.js";
 import { desidubanimeRouter } from "./routes/desidubanime/index.js";
-import { nineanimeRouter } from "./routes/nineanime/index.js";
+import nineanimeRouter from "./routes/nineanime/index.js";
 
 import pkgJson from "../package.json" with { type: "json" };
 

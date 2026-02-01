@@ -1,7 +1,7 @@
 import { Context } from "hono";
 import * as cheerio from "cheerio";
-import { fetchHtml, SITE_URL } from "./helpers";
-import { parseAnimeCards } from "./parsers";
+import { fetchHtml, SITE_URL } from "./helpers.js";
+import { parseAnimeCards } from "./parsers.js";
 
 export async function searchAnime(c: Context) {
   try {
