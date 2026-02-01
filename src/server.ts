@@ -26,6 +26,7 @@ import { animeApiRouter } from "./routes/anime-api/index.js";
 import { animelokRouter } from "./routes/animelok/index.js";
 import { desidubanimeRouter } from "./routes/desidubanime/index.js";
 import nineanimeRouter from "./routes/nineanime/index.js";
+import { animeunityRouter } from "./routes/animeunity/index.js";
 
 import pkgJson from "../package.json" with { type: "json" };
 
@@ -306,6 +307,52 @@ app.get("/info", (c) => {
   }
 }</pre>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AnimeUnity -->
+                    <div class="endpoint-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h2 class="text-2xl font-bold text-white mb-1">AnimeUnity</h2>
+                                <p class="text-sm text-zinc-400">İtalyan anime platformu - Yeni eklenen scraper</p>
+                            </div>
+                            <span class="badge badge-active">✅ AKTIF</span>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/animeunity/search?q=naruto</code>
+                                </div>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'animeunity-search-curl')">Copy</button>
+                                    <pre id="animeunity-search-curl">curl "https://pulsarwatcher.vercel.app/api/v1/animeunity/search?q=naruto"</pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/animeunity/info/{id}</code>
+                                </div>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'animeunity-info-curl')">Copy</button>
+                                    <pre id="animeunity-info-curl">curl "https://pulsarwatcher.vercel.app/api/v1/animeunity/info/{animeId}"</pre>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex items-center mb-2">
+                                    <span class="method-badge method-get">GET</span>
+                                    <code class="text-brand">/api/v1/animeunity/trending</code>
+                                </div>
+                                <div class="code-block group">
+                                    <button class="copy-btn" onclick="copyToClipboard(this, 'animeunity-trending-curl')">Copy</button>
+                                    <pre id="animeunity-trending-curl">curl "https://pulsarwatcher.vercel.app/api/v1/animeunity/trending"</pre>
                                 </div>
                             </div>
                         </div>
@@ -975,6 +1022,7 @@ app.get("/", (c) =>
         endpoints: {
             hianime: { status: "✅ Active", path: `${BASE_PATH}/hianime` },
             nineanime: { status: "✅ Active", path: `${BASE_PATH}/nineanime` },
+            animeunity: { status: "✅ Active", path: `${BASE_PATH}/animeunity` },
             animeya: { status: "✅ Active", path: `${BASE_PATH}/animeya` },
             watchaw: { status: "✅ Active", path: `${BASE_PATH}/watchaw` },
             hindidubbed: { status: "✅ Active", path: `${BASE_PATH}/hindidubbed` },
@@ -1025,6 +1073,7 @@ app.route(`${BASE_PATH}/hindidubbed`, hindiDubbedRouter);
 app.route(`${BASE_PATH}/watchaw`, watchawRouter);
 app.route(`${BASE_PATH}/animeya`, animeyaRouter);
 app.route(`${BASE_PATH}/nineanime`, nineanimeRouter);
+app.route(`${BASE_PATH}/animeunity`, animeunityRouter);
 app.route(`${BASE_PATH}/anime`, animeRouter);
 app.route(`${BASE_PATH}/anime-api`, animeApiRouter);
 app.route(`${BASE_PATH}/animelok`, animelokRouter);
